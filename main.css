@@ -1,47 +1,47 @@
 body {
-	background-color: #333333;
-	color: #EEEEEE;
-	font-family: Arial,Helvetica,sans-serif;
-	width: 725px;
-	margin: auto;
+    background-color: #333333;
+    color: #EEEEEE;
+    font-family: Arial,Helvetica,sans-serif;
+    width: 725px;
+    margin: auto;
 }
 
 p {margin-bottom: 0.5em;}
 
 ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 #filters {
-	width: 495px;
-	margin: auto;
+    width: 495px;
+    margin: auto;
 }
 
 #filters > div {
-	height: 185px;
-	float: left;
-	margin-right: 20px;
+    height: 185px;
+    float: left;
+    margin-right: 20px;
 }
 
 
 #playerFilter {
-	column-count: 2;
-	-moz-column-count: 2;
-	-webkit-column-count: 2;
+    column-count: 2;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
 }
 
 #runFilter {margin: 50px 0 0 20px;}
 
 #mainTable {
-	border-collapse: collapse;
-	clear: both;
+    border-collapse: collapse;
+    clear: both;
 }
 
 #mainTable td {
-	border: solid 1px black;
-	padding: 0.5em;
+    border: solid 1px black;
+    padding: 0.5em;
 }
 
 #mainTable td:first-child {width: 475px;}
