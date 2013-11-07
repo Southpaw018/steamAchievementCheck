@@ -1,16 +1,10 @@
 <?php
-define("OFFLINE_MODE", 0);
-if (OFFLINE_MODE) {
-    include('testData.php');
-    $achievements = json_decode($json,true);
-}
-
 require('apiKey.php');
 
 //Games we play a lot
 define("KILLING_FLOOR", 1250);
-define("PAYDAY",24240);
-define("PAYDAY2",218620);
+define("PAYDAY", 24240);
+define("PAYDAY2", 218620);
 
 //Steam ID lookup service: http://steamid.co/
 $mumblol = array(
@@ -32,57 +26,62 @@ $mumblol = array(
     "Kaiser" =>         array("steam32id" => "STEAM_0:0:17778159",  "steam64id" => "76561197995822046")
 );
 
-$achievements = array();
+if (empty($_GET['offline'])) {
+    $response = @file_get_contents(getGameAchievements(PAYDAY2));
+    $players = array_keys($mumblol);
+    $json = json_decode($response, true);
+    $achievements = json_decode($json, true);
+    $rawAchievements = $json['achievementpercentages']['achievements'];
+    usort($rawAchievements, function($a, $b) {
+        return strcasecmp($a['name'], $b['name']);
+    });
 
-$response = @file_get_contents(getGameAchievements(PAYDAY2));
-$json = json_decode($response,true);
-$rawAchievements = $json['achievementpercentages']['achievements'];
-usort($rawAchievements, "sort_achievements");
-
-foreach ($rawAchievements as $achievement) {
-    $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
-}
-
-foreach ($mumblol as $name => $id) {
-    $response = @file_get_contents(getPlayerAchievements(PAYDAY2,$id['steam64id']));
-    if ($response === false) {unset($mumblol[$name]); continue;}
-    $json = json_decode($response,true);
-    $playerAchievements = $json['playerstats']['achievements'];
-
-    foreach ($playerAchievements as $achievement) {
-        if ($achievement['achieved']) $achievements[$achievement['apiname']]['earned'][] = $name;
-        else $achievements[$achievement['apiname']]['unearned'][] = $name;
-        if (!isset($achievements[$achievement['apiname']]['name'])) $achievements[$achievement['apiname']]['name'] = $achievement['name'];
-        if (!isset($achievements[$achievement['apiname']]['description'])) $achievements[$achievement['apiname']]['description'] = $achievement['description'];
+    foreach ($rawAchievements as $achievement) {
+        $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
     }
 
-    sleep(0.1);
-}
+    foreach ($mumblol as $name => $id) {
+        $response = @file_get_contents(getPlayerAchievements(PAYDAY2, $id['steam64id']));
+        if (!$response) {
+            unset($mumblol[$name]);
+            continue;
+        }
 
-$players = array_keys($mumblol);
+        $json = json_decode($response, true);
+        $playerAchievements = $json['playerstats']['achievements'];
 
-function sort_achievements($a,$b) {
-    return strcasecmp($a['name'],$b['name']);
+        foreach ($playerAchievements as $achievement) {
+            if ($achievement['achieved']) $achievements[$achievement['apiname']]['earned'][] = $name;
+            else $achievements[$achievement['apiname']]['unearned'][] = $name;
+
+            if (!isset($achievements[$achievement['apiname']]['name'])) $achievements[$achievement['apiname']]['name'] = $achievement['name'];
+            if (!isset($achievements[$achievement['apiname']]['description'])) $achievements[$achievement['apiname']]['description'] = $achievement['description'];
+        }
+
+        usleep(100000);
+    }
+} else {
+    include('testData.php');
 }
 
 //web API HTML docs: https://developer.valvesoftware.com/wiki/Steam_Web_API
 //web API function list: http://api.steampowered.com/ISteamWebAPIUtil/GetSupportedAPIList/v0001/
 //full app list: http://api.steampowered.com/ISteamApps/GetAppList/v0002/
 function getGameAchievements($app) {
-    return "http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=" . $app;
+    return "http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={$app}";
 }
-function getPlayerAchievements($app,$steamid) {
-    return "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=" . $app . "&key=" . API_KEY . "&steamid=" . $steamid . "&l=en";
+function getPlayerAchievements($app, $steamid) {
+    return "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en";
 }
-function getPlayerStats($app,$steamid) {
-    return "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=" . $app . "&key=" . API_KEY . "&steamid=" . $steamid . "&l=en";
+function getPlayerStats($app, $steamid) {
+    return "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en";
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Mumble Crew Steam Achievement Check</title>
-    <meta charset='utf-8' />
+    <meta charset="utf-8" />
 
     <link rel="stylesheet" type="text/css" href="main.css" />
 
@@ -132,3 +131,4 @@ function getPlayerStats($app,$steamid) {
 </table>
 </body>
 </html>
+
