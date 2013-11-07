@@ -14,22 +14,22 @@ define("PAYDAY2",218620);
 
 //Steam ID lookup service: http://steamid.co/
 $mumblol = array(
-	"Glorax" =>			array("steam32id" => "STEAM_0:1:16523708",	"steam64id" => "76561197993313145"),
-	"Deagle" =>			array("steam32id" => "STEAM_0:1:5024477",	"steam64id" => "76561197970314683"),
-	"Oten" =>			array("steam32id" => "STEAM_0:1:15693452",	"steam64id" => "76561197991652633"),
-	"Fargi" =>			array("steam32id" => "STEAM_0:0:27471211",	"steam64id" => "76561198015208150"),
+	"Glorax" =>				array("steam32id" => "STEAM_0:1:16523708",	"steam64id" => "76561197993313145"),
+	"Deagle" =>				array("steam32id" => "STEAM_0:1:5024477",		"steam64id" => "76561197970314683"),
+	"Oten" =>					array("steam32id" => "STEAM_0:1:15693452",	"steam64id" => "76561197991652633"),
+	"Fargi" =>				array("steam32id" => "STEAM_0:0:27471211",	"steam64id" => "76561198015208150"),
 	"funkylobster" =>	array("steam32id" => "STEAM_0:0:31660345",	"steam64id" => "76561198023586418"),
-	"Moof" =>			array("steam32id" => "STEAM_0:0:3172837",	"steam64id" => "76561197966611402"),
-	"Scibs" =>			array("steam32id" => "STEAM_0:1:23091575",	"steam64id" => "76561198006448879"),
-	"Phrosty" =>		array("steam32id" => "STEAM_0:0:11257",		"steam64id" => "76561197960288242"),
+	"Moof" =>					array("steam32id" => "STEAM_0:0:3172837",		"steam64id" => "76561197966611402"),
+	"Scibs" =>				array("steam32id" => "STEAM_0:1:23091575",	"steam64id" => "76561198006448879"),
+	"Phrosty" =>			array("steam32id" => "STEAM_0:0:11257",			"steam64id" => "76561197960288242"),
 	"Balthazar" =>		array("steam32id" => "STEAM_0:0:18255024",	"steam64id" => "76561197996775776"),
 	"Pixelation" =>		array("steam32id" => "STEAM_0:1:24785854",	"steam64id" => "76561198009837437"),
-	"Banana" =>			array("steam32id" => "STEAM_0:1:16482649",	"steam64id" => "76561197993231027"),
+	"Banana" =>				array("steam32id" => "STEAM_0:1:16482649",	"steam64id" => "76561197993231027"),
 	"Bukkithead" =>		array("steam32id" => "STEAM_0:1:27314902",	"steam64id" => "76561198014895533"),
-	"Chuffy" =>			array("steam32id" => "STEAM_0:1:6196171",	"steam64id" => "76561197972658071"),
-	"Master" =>			array("steam32id" => "STEAM_0:1:18275239",	"steam64id" => "76561197996816207"),
-	"Joe" =>			array("steam32id" => "STEAM_0:0:19328158",	"steam64id" => "76561197998922044"),
-	"Kaiser" =>			array("steam32id" => "STEAM_0:0:17778159",	"steam64id" => "76561197995822046")
+	"Chuffy" =>				array("steam32id" => "STEAM_0:1:6196171",		"steam64id" => "76561197972658071"),
+	"Master" =>				array("steam32id" => "STEAM_0:1:18275239",	"steam64id" => "76561197996816207"),
+	"Joe" =>					array("steam32id" => "STEAM_0:0:19328158",	"steam64id" => "76561197998922044"),
+	"Kaiser" =>				array("steam32id" => "STEAM_0:0:17778159",	"steam64id" => "76561197995822046")
 );
 
 $achievements = array();
