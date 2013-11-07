@@ -79,56 +79,59 @@ function getPlayerStats($app, $steamid) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Mumble Crew Steam Achievement Check</title>
-    <meta charset="utf-8" />
+    <head>
+        <title>Mumble Crew Steam Achievement Check</title>
+        <meta charset="utf-8" />
 
-    <link rel="stylesheet" type="text/css" href="main.css" />
+        <link rel="stylesheet" type="text/css" href="main.css" />
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
-    <script src="//mottie.github.io/tablesorter/js/jquery.tablesorter.js"></script>
-    <link rel="stylesheet" type="text/css" href="//mottie.github.io/tablesorter/css/theme.grey.css" />
+        <script src="//mottie.github.io/tablesorter/js/jquery.tablesorter.js"></script>
+        <link rel="stylesheet" type="text/css" href="//mottie.github.io/tablesorter/css/theme.grey.css" />
 
-    <script src="//raw.github.com/Sjeiti/TinySort/master/src/jquery.tinysort.js"></script>
+        <script src="//raw.github.com/Sjeiti/TinySort/master/src/jquery.tinysort.js"></script>
 
-    <script src="main.js"></script>
+        <script src="main.js"></script>
 
-    <script>
-        var achievements = <?=json_encode($achievements);?>;
-        var players = <?=json_encode($players);?>;
-    </script>
-</head>
-<body>
-<div id="filters">
-    <div>
-        <p>Show only:</p>
-        <form id="playerFilter"></form>
-    </div>
-    <div>
-        <p>Show achievements:</p>
-        <form id="earnedUnearnedFilter">
-            <input type="checkbox" value="earned" id="earnedFilter" />
-            <label for="earnedFilter">Earned</label><br />
-
-            <input type="checkbox" value="unearned" id="unearnedFilter" />
-            <label for="unearnedFilter">Unearned</label>
-        </select>
-    </div>
-    <div>
-            <input type="button" value="Filter" id="runFilter" />
-    </div>
-</div>
-<table id="mainTable">
-    <thead>
-        <tr>
-            <td>Achievement</td>
-            <td>Players</td>
-            <td>Global %</td>
-        </tr>
-    </thead>
-    <tbody/>
-</table>
-</body>
+        <script>
+            var achievements = <?=json_encode($achievements);?>;
+            var players = <?=json_encode($players);?>;
+        </script>
+    </head>
+    <body>
+        <section class="main">
+            <form class="filters">
+                <fieldset>
+                    <legend>Show players</legend>
+                    <ul id="playerFilter" class="playerFilter"></ul>
+                </fieldset>
+                <fieldset>
+                    <legend>Show achievements</legend>
+                    <ul id="earnedUnearnedFilter">
+                        <li>
+                            <input type="checkbox" value="earned" id="earnedFilter" checked />
+                            <label for="earnedFilter">Earned</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" value="unearned" id="unearnedFilter" checked />
+                            <label for="unearnedFilter">Unearned</label>
+                        </li>
+                    </ul>
+                </fieldset>
+                <input type="button" id="runFilter" value="Update Filters" />
+            </form>
+            <table id="mainTable" class="mainTable">
+                <thead>
+                    <tr>
+                        <th>Achievement</th>
+                        <th>Players</th>
+                        <th>Global %</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </body>
 </html>
 
