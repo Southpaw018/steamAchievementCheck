@@ -11,6 +11,10 @@ ul {
     padding: 0;
 }
 
+abbr[title] {
+    border-bottom: 1px dashed silver;
+}
+
 .main {
     margin: auto;
     width: 725px;
