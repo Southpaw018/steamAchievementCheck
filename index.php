@@ -23,7 +23,7 @@ $mumblol = array(
     "Chuffy" =>         array("steam32id" => "STEAM_0:1:6196171",   "steam64id" => "76561197972658071"),
     "Master" =>         array("steam32id" => "STEAM_0:1:18275239",  "steam64id" => "76561197996816207"),
     "Joe" =>            array("steam32id" => "STEAM_0:0:19328158",  "steam64id" => "76561197998922044"),
-    "Kaiser" =>         array("steam32id" => "STEAM_0:0:17778159",  "steam64id" => "76561197995822046")
+    "Kaiser" =>         array("steam32id" => "STEAM_0:0:17778159",  "steam64id" => "76561197995822046"),
 );
 
 if (empty($_GET['offline'])) {
@@ -104,7 +104,12 @@ function getPlayerStats($app, $steamid) {
             <form class="filters">
                 <fieldset>
                     <legend>Show players</legend>
-                    <ul id="playerFilter" class="playerFilter"></ul>
+                    <ul id="playerFilter" class="playerFilter">
+                        <li>
+                            <input type="checkbox" id="toggleAllPlayers" checked />
+                            <label for="toggleAllPlayers">All</label>
+                        </li>
+                    </ul>
                 </fieldset>
                 <fieldset>
                     <legend>Show achievements</legend>
@@ -119,7 +124,6 @@ function getPlayerStats($app, $steamid) {
                         </li>
                     </ul>
                 </fieldset>
-                <input type="button" id="runFilter" value="Update Filters" />
             </form>
             <table id="mainTable" class="mainTable">
                 <thead>

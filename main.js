@@ -44,7 +44,7 @@ $(document).ready(function() {
         $('#playerFilter').append(li);
     });
 
-    $('#mainTable').tablesorter({
+    $mainTable.tablesorter({
         theme: 'grey',
         headerTemplate: '{content}{icon}',
         sortList: [[0, 0]],
@@ -52,68 +52,90 @@ $(document).ready(function() {
         widgets: ['zebra']
     });
 
-    $('#mainTable li').tsort();
+    $mainTable.find('li').tsort();
 });
 
-function hideEmptyRows() {
-    $('.earnedUnearnedList').each(function() {
-        var tr = $(this).closest('tr');
-        if ($(':visible', this).length) {
-            tr.show();
+$(document).ready(function() {
+
+    $('#toggleAllPlayers').change(function(evt) {
+        var checked = evt.currentTarget.checked,
+            $elems,
+            classesToShow;
+
+        $('#playerFilter input').prop('checked', checked);
+        if (checked) {
+            $elems = $('#mainTable .earnedUnearnedList li');
+            classesToShow = $('#earnedUnearnedFilter input:checked').map(function() { return this.value; }).get();
+
+            $elems.each(function() {
+                var $this = $(this);
+                if ($.inArray(this.className, classesToShow) === -1) {
+                    $this.hide();
+                } else {
+                    $this.show();
+                }
+                checkRowVisibility($this);
+            });
         } else {
-            tr.hide();
+            $('#mainTable tr').hide();
         }
     });
-    $('#mainTable').trigger('update');
-}
 
-$(document).ready(function() {
-    $('#playerFilter input').change(function(evt) {
+    $('#playerFilter input[value]').change(function(evt) {
         var name = evt.currentTarget.value,
-            elems = $('.earnedUnearnedList li'),
+            $elems = $('#mainTable .earnedUnearnedList li'),
             classesToShow;
 
         if (evt.currentTarget.checked) {
             classesToShow = $('#earnedUnearnedFilter input:checked').map(function() { return this.value; }).get();
-            elems.each(function(index, elem) {
-                var $elem = $(elem);
-                if ($elem.text() === name) {
-                    if ($.inArray(elem.className, classesToShow) === -1) {
-                        $elem.hide();
+            $elems.each(function() {
+                var $this = $(this);
+                if ($this.text() === name) {
+                    if ($.inArray(this.className, classesToShow) === -1) {
+                        $this.hide();
                     } else {
-                        $elem.show();
+                        $this.show();
                     }
+                    checkRowVisibility($this);
                 }
             });
         } else {
-            elems.each(function(index, elem) {
-                var $elem = $(elem);
-                if ($elem.text() === name) {
-                    $elem.hide();
+            $elems.each(function() {
+                var $this = $(this);
+                if ($this.text() === name) {
+                    $this.hide();
                 }
+                checkRowVisibility($this);
             });
         }
-        hideEmptyRows();
     });
 
     $('#earnedUnearnedFilter input').change(function(evt) {
-        var elems = $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value),
+        var $elems = $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value),
             namesToShow;
 
         if (evt.currentTarget.checked) {
             namesToShow = $('#playerFilter input:checked').map(function() { return this.value; }).get();
-            elems.each(function(index, elem) {
-                var $elem = $(elem);
-                if ($.inArray($elem.text(), namesToShow) === -1) {
-                    $elem.hide();
+            $elems.each(function() {
+                var $this = $(this);
+                if ($.inArray($this.text(), namesToShow) === -1) {
+                    $this.hide();
                 } else {
-                    $elem.show();
+                    $this.show();
                 }
+                checkRowVisibility($this);
             });
         } else {
-            elems.hide();
+            $elems.hide();
         }
-        hideEmptyRows();
     });
+
 });
 
+function checkRowVisibility($elem) {
+    var $tr = $elem.closest('tr');
+    $tr.show();
+    if (!$tr.find('li:visible').length) {
+        $tr.hide();
+    }
+}

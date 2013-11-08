@@ -27,6 +27,9 @@ ul {
     -webkit-column-count: 2;
     column-count: 2;
 }
+.playerFilter li:first-child {
+    font-style: italic;
+}
 
 .mainTable {
     border-collapse: collapse;
