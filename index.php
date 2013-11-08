@@ -29,7 +29,9 @@ uasort($players, function($a, $b) {
 });
 
 if (empty($_GET['offline']) && (!empty($_GET['nocache']) || filemtime(OFFLINE_FILE) + 300 < time())) {
-    $response = @file_get_contents(getGameAchievements(PAYDAY2));
+    $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
+
+    $response = @file_get_contents(getGameAchievements($app));
     $json = json_decode($response, true);
     $rawAchievements = $json['achievementpercentages']['achievements'];
     usort($rawAchievements, function($a, $b) {
@@ -42,7 +44,7 @@ if (empty($_GET['offline']) && (!empty($_GET['nocache']) || filemtime(OFFLINE_FI
     }
 
     foreach ($players as $id => $name) {
-        $response = @file_get_contents(getPlayerAchievements(PAYDAY2, $id));
+        $response = @file_get_contents(getPlayerAchievements($app, $id));
         if (!$response) {
             unset($players[$id]);
             continue;
