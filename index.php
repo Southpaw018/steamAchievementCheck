@@ -14,18 +14,13 @@ $players = array(
     '76561197970314683' => 'Deagle',
     '76561197991652633' => 'Oten',
     '76561198015208150' => 'Fargi',
-    '76561198023586418' => 'funkylobster',
     '76561197966611402' => 'Moof',
     '76561198006448879' => 'Scibs',
-    '76561197960288242' => 'Phrosty',
-    '76561197996775776' => 'Balthazar',
-    '76561198009837437' => 'Pixelation',
     '76561197993231027' => 'Banana',
     '76561198014895533' => 'Bukkithead',
     '76561197972658071' => 'Chuffy',
     '76561197996816207' => 'Master',
     '76561197998922044' => 'Joe',
-    '76561197995822046' => 'Kaiser',
 );
 
 uasort($players, function($a, $b) {
@@ -33,15 +28,15 @@ uasort($players, function($a, $b) {
     return $a < $b ? -1 : 1;
 });
 
-if (empty($_GET['offline'])) {
+if (empty($_GET['offline']) && (!empty($_GET['nocache']) || filemtime(OFFLINE_FILE) + 300 < time())) {
     $response = @file_get_contents(getGameAchievements(PAYDAY2));
     $json = json_decode($response, true);
-    $achievements = json_decode($json, true);
     $rawAchievements = $json['achievementpercentages']['achievements'];
     usort($rawAchievements, function($a, $b) {
         return strcasecmp($a['name'], $b['name']);
     });
 
+    $achievements = array();
     foreach ($rawAchievements as $achievement) {
         $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
     }
