@@ -55,7 +55,7 @@ if (empty($_GET['offline']) && (!empty($_GET['nocache']) || filemtime(OFFLINE_FI
 
         foreach ($playerAchievements as $achievement) {
             $achData = &$achievements[$achievement['apiname']];
-            $achData[$achievement['achieved'] ? 'earned' : 'unearned'][] = $id;
+            $achData[$achievement['achieved'] ? 'earned' : 'unearned'][] = (string) $id;
 
             if (!isset($achData['name'])) $achData['name'] = $achievement['name'];
             if (!isset($achData['description'])) $achData['description'] = $achievement['description'];
