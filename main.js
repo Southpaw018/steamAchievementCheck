@@ -1,88 +1,144 @@
 $(document).ready(function() {
-    $.each(achievements, function() {
-        var output = '';
-        if ($(this.earned).length > 0) output = '<li class="earned">' + this.earned.join('</li><li class="earned">') + '</li>';
-        if ($(this.unearned).length > 0) output += '<li class="unearned">' + this.unearned.join('</li><li class="unearned">') + '</li>';
+    var $mainTable = $('#mainTable'),
+        $tbody = $mainTable.find('tbody');
 
-        var pct = (typeof(this.percent) == "undefined") ? 0 : this.percent;
-        if (output != '') $('#mainTable tbody').append('<tr><td>' + this.name + '<br /><small>' + this.description + '</small></td> <td><ul class="earnedUnearnedList">' + output + '</ul></td> <td><abbr title="' + pct + '%">' + pct.toFixed(2) + '%</abbr></td></tr>');
+    $.each(achievements, function() {
+        var $tr = $('<tr></tr>'),
+            $list = $('<ul class="earnedUnearnedList"></ul>'),
+            percent;
+
+        if (this.earned) {
+            $.each(this.earned, function(index, name) {
+                $list.append($('<li class="earned"></li>').append(document.createTextNode(name)));
+            });
+        }
+        if (this.unearned) {
+            $.each(this.unearned, function(index, name) {
+                $list.append($('<li class="unearned"></li>').append(document.createTextNode(name)));
+            });
+        }
+
+        $tr.append(
+            $('<td></td>').append(document.createTextNode(this.name))
+                    .append('<br />')
+                    .append($('<small></small>').append(document.createTextNode(this.description)))
+        );
+
+        $tr.append($('<td></td>').append($list));
+
+        percent = this.percent || 0;
+        $tr.append($('<td></td>').append(
+            $('<abbr></abbr>').attr('title', percent + '%')
+                    .append(percent.toFixed(2) + '%')
+        ));
+
+        $tbody.append($tr);
     });
 
     players = players.sort();
     $.each(players, function(x) {
-        var name = players[x];
-        $('#playerFilter').append('<input type="checkbox" value="' + name + '" id="' + name + 'PlayerFilter" />');// + name + '</input>');
-        $('#playerFilter').append('<label for="' + name + 'PlayerFilter">' + name + '</label><br />');
+        var name = players[x],
+            li = $('<li></li>');
+        li.append('<input type="checkbox" value="' + name + '" id="' + name + 'PlayerFilter" checked />');
+        li.append('<label for="' + name + 'PlayerFilter">' + name + '</label>');
+        $('#playerFilter').append(li);
     });
 
-    $('#mainTable').tablesorter({
+    $mainTable.tablesorter({
         theme: 'grey',
         headerTemplate: '{content}{icon}',
-        sortList: [[0,0]],
+        sortList: [[0, 0]],
         headers: {1: {sorter: false}},
         widgets: ['zebra']
     });
 
-    $('#mainTable li').tsort();
-
-    $('#runFilter').click(function() {
-        var filterElements = $('#mainTable .earnedUnearnedList li');
-        var playersToDisplay = $('#playerFilter input:checked').map(function() {return this.value;}).get();
-        var achievementsToDisplay = $('#earnedUnearnedFilter input:checked').map(function() {return this.value;}).get();
-
-        if (playersToDisplay.length == 0) playersToDisplay = players;
-        if (achievementsToDisplay.length == 0) achievementsToDisplay = ["earned","unearned"];
-
-        resetTable();
-        filterElements.hide();
-        $.each(filterElements, function() {
-            if (
-                $.inArray($(this).text(),playersToDisplay) != -1 &&
-                $.inArray($(this).attr('class'),achievementsToDisplay) != -1
-            ) $(this).show();
-        });
-
-        hideEmptyRows();
-    });
+    $mainTable.find('li').tsort();
 });
 
-function resetTable() {
-    $('#mainTable tr').show();  
-    $('#mainTable .earnedUnearnedList li').show();
-    $('#mainTable').trigger('update');
-}
+$(document).ready(function() {
 
-function hideEmptyRows() {
-    $('.earnedUnearnedList').each(function() {if ($(':visible',this).length == 0) $(this).closest('tr').hide();});
-    $('#mainTable').trigger('update');
-}
+    $('#toggleAllPlayers').change(function(evt) {
+        var checked = evt.currentTarget.checked,
+            $elems,
+            classesToShow;
 
-//Stuff for executing filters on checkbox change instead of filter button
-/*$(document).ready(function() {
-    $('#playerFilter input').change(function() {
-        hidePlayer($(this).val());
+        $('#playerFilter input').prop('checked', checked);
+        if (checked) {
+            $elems = $('#mainTable .earnedUnearnedList li');
+            classesToShow = $('#earnedUnearnedFilter input:checked').map(function() { return this.value; }).get();
+
+            $elems.each(function() {
+                var $this = $(this);
+                if ($.inArray(this.className, classesToShow) === -1) {
+                    $this.hide();
+                } else {
+                    $this.show();
+                }
+            });
+            checkRowVisibility($elems);
+        } else {
+            $('#mainTable tbody tr').hide();
+        }
     });
-    $('#earnedUnearnedFilter').change(function(sel) {
-        hideEarnedUnearned($(this).val());
+
+    $('#playerFilter input[value]').change(function(evt) {
+        var name = evt.currentTarget.value,
+            $elems = $('#mainTable .earnedUnearnedList li'),
+            classesToShow;
+
+        if (evt.currentTarget.checked) {
+            classesToShow = $('#earnedUnearnedFilter input:checked').map(function() { return this.value; }).get();
+            $elems.each(function() {
+                var $this = $(this);
+                if ($this.text() === name) {
+                    if ($.inArray(this.className, classesToShow) === -1) {
+                        $this.hide();
+                    } else {
+                        $this.show();
+                    }
+                    checkRowVisibility($this);
+                }
+            });
+        } else {
+            $elems.each(function() {
+                var $this = $(this);
+                if ($this.text() === name) {
+                    $this.hide();
+                }
+                checkRowVisibility($this);
+            });
+        }
     });
+
+    $('#earnedUnearnedFilter input').change(function(evt) {
+        var $elems = $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value),
+            namesToShow;
+
+        if (evt.currentTarget.checked) {
+            namesToShow = $('#playerFilter input:checked').map(function() { return this.value; }).get();
+            $elems.each(function() {
+                var $this = $(this);
+                if ($.inArray($this.text(), namesToShow) === -1) {
+                    $this.hide();
+                } else {
+                    $this.show();
+                }
+                checkRowVisibility($this);
+            });
+        } else {
+            $elems.hide();
+            checkRowVisibility($elems);
+        }
+    });
+
 });
 
-function hideEarnedUnearned(type) {
-    //if (!String.match(/earned|unearned|none/,"unearned")) return;
-    resetTable();
-    if (type == "none") return;
-    $('#mainTable .earnedUnearnedList li.' + type).hide();
-    hideEmptyRows();
-}
-
-function hidePlayer(player) {
-    resetTable();
-    if ($('#playerFilter input:checked').length == 0) return;
-    var filterElements = $('#mainTable .earnedUnearnedList li');
-    $('#playerFilter input:checked').each(function(x,elemX) {
-        var player = $(elemX).val();
-        filterElements.each(function(y,elemY) {
-            if ($(elemY).text() != player) $(elemY).hide();
-        });
+function checkRowVisibility($elems) {
+    $elems.each(function() {
+        var $tr = $(this).closest('tr');
+        $tr.show();
+        if (!$tr.find('li:visible').length) {
+            $tr.hide();
+        }
     });
-}*/
+}
