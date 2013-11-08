@@ -3,36 +3,38 @@ $(document).ready(function() {
         $tbody = $mainTable.find('tbody');
 
     $.each(achievements, function() {
-        var $tr = $('<tr></tr>'),
-            $list = $('<ul class="earnedUnearnedList"></ul>'),
-            percent;
+        if (this.name) {
+            var $tr = $('<tr></tr>'),
+                $list = $('<ul class="earnedUnearnedList"></ul>'),
+                percent;
 
-        if (this.earned) {
-            $.each(this.earned, function(index, id) {
-                $list.append($('<li class="earned"></li>').append(document.createTextNode(players[id])).attr('data-id', id));
-            });
+            if (this.earned) {
+                $.each(this.earned, function(index, id) {
+                    $list.append($('<li class="earned"></li>').append(document.createTextNode(players[id])).attr('data-id', id));
+                });
+            }
+            if (this.unearned) {
+                $.each(this.unearned, function(index, id) {
+                    $list.append($('<li class="unearned"></li>').append(document.createTextNode(players[id])).attr('data-id', id));
+                });
+            }
+
+            $tr.append(
+                $('<td></td>').append(document.createTextNode(this.name))
+                        .append('<br />')
+                        .append($('<small></small>').append(document.createTextNode(this.description)))
+            );
+
+            $tr.append($('<td></td>').append($list));
+
+            percent = this.percent || 0;
+            $tr.append($('<td></td>').append(
+                $('<abbr></abbr>').attr('title', percent + '%')
+                        .append(percent.toFixed(2) + '%')
+            ));
+
+            $tbody.append($tr);
         }
-        if (this.unearned) {
-            $.each(this.unearned, function(index, id) {
-                $list.append($('<li class="unearned"></li>').append(document.createTextNode(players[id])).attr('data-id', id));
-            });
-        }
-
-        $tr.append(
-            $('<td></td>').append(document.createTextNode(this.name))
-                    .append('<br />')
-                    .append($('<small></small>').append(document.createTextNode(this.description)))
-        );
-
-        $tr.append($('<td></td>').append($list));
-
-        percent = this.percent || 0;
-        $tr.append($('<td></td>').append(
-            $('<abbr></abbr>').attr('title', percent + '%')
-                    .append(percent.toFixed(2) + '%')
-        ));
-
-        $tbody.append($tr);
     });
 
     $.each(players, function(id) {
