@@ -49,3 +49,8 @@ ul {
 
 .mainTable td:last-child {text-align: right;}
 
+li[data-hideid=true],
+li[data-hidetype=true] {
+    display: none;
+}
+
