@@ -74,10 +74,10 @@ $(document).ready(function() {
                 } else {
                     $this.show();
                 }
-                checkRowVisibility($this);
             });
+            checkRowVisibility($elems);
         } else {
-            $('#mainTable tr').hide();
+            $('#mainTable tbody tr').hide();
         }
     });
 
@@ -127,15 +127,18 @@ $(document).ready(function() {
             });
         } else {
             $elems.hide();
+            checkRowVisibility($elems);
         }
     });
 
 });
 
-function checkRowVisibility($elem) {
-    var $tr = $elem.closest('tr');
-    $tr.show();
-    if (!$tr.find('li:visible').length) {
-        $tr.hide();
-    }
+function checkRowVisibility($elems) {
+    $elems.each(function() {
+        var $tr = $(this).closest('tr');
+        $tr.show();
+        if (!$tr.find('li:visible').length) {
+            $tr.hide();
+        }
+    });
 }
