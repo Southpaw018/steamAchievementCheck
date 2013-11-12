@@ -3,44 +3,45 @@ $(document).ready(function() {
         $tbody = $mainTable.find('tbody');
 
     $.each(achievements, function() {
-        var $tr = $('<tr></tr>'),
-            $list = $('<ul class="earnedUnearnedList"></ul>'),
-            percent;
+        if (this.name) {
+            var $tr = $('<tr></tr>'),
+                $list = $('<ul class="earnedUnearnedList"></ul>'),
+                percent;
 
-        if (this.earned) {
-            $.each(this.earned, function(index, name) {
-                $list.append($('<li class="earned"></li>').append(document.createTextNode(name)));
-            });
+            if (this.earned) {
+                $.each(this.earned, function(index, id) {
+                    $list.append($('<li class="earned"></li>').append(document.createTextNode(players[id])).attr('data-id', id));
+                });
+            }
+            if (this.unearned) {
+                $.each(this.unearned, function(index, id) {
+                    $list.append($('<li class="unearned"></li>').append(document.createTextNode(players[id])).attr('data-id', id));
+                });
+            }
+
+            $tr.append(
+                $('<td></td>').append(document.createTextNode(this.name))
+                        .append('<br />')
+                        .append($('<small></small>').append(document.createTextNode(this.description)))
+            );
+
+            $tr.append($('<td></td>').append($list));
+
+            percent = this.percent || 0;
+            $tr.append($('<td></td>').append(
+                $('<abbr></abbr>').attr('title', percent + '%')
+                        .append(percent.toFixed(2) + '%')
+            ));
+
+            $tbody.append($tr);
         }
-        if (this.unearned) {
-            $.each(this.unearned, function(index, name) {
-                $list.append($('<li class="unearned"></li>').append(document.createTextNode(name)));
-            });
-        }
-
-        $tr.append(
-            $('<td></td>').append(document.createTextNode(this.name))
-                    .append('<br />')
-                    .append($('<small></small>').append(document.createTextNode(this.description)))
-        );
-
-        $tr.append($('<td></td>').append($list));
-
-        percent = this.percent || 0;
-        $tr.append($('<td></td>').append(
-            $('<abbr></abbr>').attr('title', percent + '%')
-                    .append(percent.toFixed(2) + '%')
-        ));
-
-        $tbody.append($tr);
     });
 
-    players = players.sort();
-    $.each(players, function(x) {
-        var name = players[x],
+    $.each(players, function(id) {
+        var name = players[id],
             li = $('<li></li>');
-        li.append('<input type="checkbox" value="' + name + '" id="' + name + 'PlayerFilter" checked />');
-        li.append('<label for="' + name + 'PlayerFilter">' + name + '</label>');
+        li.append('<input type="checkbox" id="' + id + '" checked />');
+        li.append('<label for="' + id + '">' + name + '</label>');
         $('#playerFilter').append(li);
     });
 
@@ -58,87 +59,47 @@ $(document).ready(function() {
 $(document).ready(function() {
 
     $('#toggleAllPlayers').change(function(evt) {
-        var checked = evt.currentTarget.checked,
-            $elems,
-            classesToShow;
+        var checked = evt.currentTarget.checked;
+        $('#playerFilter input[id]').prop('checked', checked);
 
-        $('#playerFilter input').prop('checked', checked);
-        if (checked) {
-            $elems = $('#mainTable .earnedUnearnedList li');
-            classesToShow = $('#earnedUnearnedFilter input:checked').map(function() { return this.value; }).get();
-
-            $elems.each(function() {
-                var $this = $(this);
-                if ($.inArray(this.className, classesToShow) === -1) {
-                    $this.hide();
-                } else {
-                    $this.show();
-                }
-            });
-            checkRowVisibility($elems);
-        } else {
-            $('#mainTable tbody tr').hide();
-        }
+        $('#mainTable .earnedUnearnedList li').each(function() {
+            var $this = $(this);
+            $this.attr('data-hideid', !checked);
+        });
+        updateAllRowVisibility();
     });
 
-    $('#playerFilter input[value]').change(function(evt) {
-        var name = evt.currentTarget.value,
-            $elems = $('#mainTable .earnedUnearnedList li'),
-            classesToShow;
-
-        if (evt.currentTarget.checked) {
-            classesToShow = $('#earnedUnearnedFilter input:checked').map(function() { return this.value; }).get();
-            $elems.each(function() {
-                var $this = $(this);
-                if ($this.text() === name) {
-                    if ($.inArray(this.className, classesToShow) === -1) {
-                        $this.hide();
-                    } else {
-                        $this.show();
-                    }
-                    checkRowVisibility($this);
-                }
-            });
-        } else {
-            $elems.each(function() {
-                var $this = $(this);
-                if ($this.text() === name) {
-                    $this.hide();
-                }
-                checkRowVisibility($this);
-            });
-        }
+    $('#playerFilter input[id]').change(function(evt) {
+        var hide = !evt.currentTarget.checked;
+        $('#mainTable .earnedUnearnedList li[data-id=' + evt.currentTarget.id + ']').each(function() {
+            var $this = $(this);
+            $this.attr('data-hideid', hide);
+        });
+        updateAllRowVisibility();
     });
 
     $('#earnedUnearnedFilter input').change(function(evt) {
-        var $elems = $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value),
-            namesToShow;
-
-        if (evt.currentTarget.checked) {
-            namesToShow = $('#playerFilter input:checked').map(function() { return this.value; }).get();
-            $elems.each(function() {
-                var $this = $(this);
-                if ($.inArray($this.text(), namesToShow) === -1) {
-                    $this.hide();
-                } else {
-                    $this.show();
-                }
-                checkRowVisibility($this);
-            });
-        } else {
-            $elems.hide();
-            checkRowVisibility($elems);
-        }
+        var hide = !evt.currentTarget.checked;
+        $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value).each(function() {
+            var $this = $(this);
+            $this.attr('data-hidetype', hide);
+            updateRowVisibility($this.closest('tr'));
+        });
     });
 
 });
 
-function checkRowVisibility($elems) {
-    $elems.each(function() {
-        var $tr = $(this).closest('tr');
-        $tr.show();
-        if (!$tr.find('li:visible').length) {
-            $tr.hide();
-        }
+function updateAllRowVisibility() {
+    $('#mainTable tbody tr').each(function() {
+        updateRowVisibility($(this));
     });
 }
+
+function updateRowVisibility($tr) {
+    if ($tr.find('li[data-hideid!=true][data-hidetype!=true]').length) {
+        $tr.show();
+    } else {
+        $tr.hide();
+    }
+}
+

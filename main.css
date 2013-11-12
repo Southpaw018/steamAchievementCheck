@@ -11,6 +11,10 @@ ul {
     padding: 0;
 }
 
+abbr[title] {
+    border-bottom: 1px dashed silver;
+}
+
 .main {
     margin: auto;
     width: 725px;
@@ -48,4 +52,9 @@ ul {
 .mainTable .unearned {color: #000080;}
 
 .mainTable td:last-child {text-align: right;}
+
+li[data-hideid=true],
+li[data-hidetype=true] {
+    display: none;
+}
 
