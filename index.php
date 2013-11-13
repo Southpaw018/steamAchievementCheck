@@ -144,6 +144,7 @@ function getPlayerStats($app, $steamid) {
                             </li>
                         </ul>
                     </fieldset>
+                    <div class="clearDiv"></div>
                 </form>
             </div>
             <table id="mainTable" class="mainTable">

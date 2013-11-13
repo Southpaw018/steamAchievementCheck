@@ -46,6 +46,19 @@ $(document).ready(function() {
         $('#playerFilter').append(li);
     });
 
+    $.each(players, function(id) {
+        if ($('#mainTable').find('li.unearned[data-id=' + id + ']') //find all unearned achievements for this player...
+            .closest('tr')
+            .find('td.percent:not([data-testachievement=true])') //...that are not test achievements
+            .length == 0) {
+            /*$('#playerFilter input[id=' + id + ']')
+                .attr('checked',false)
+                .attr('disabled',true)
+                .change();*/
+            $('#playerFilter label[for=' + id + ']').addClass('earned');
+        }
+    });
+
     $mainTable.tablesorter({
         theme: 'grey',
         headerTemplate: '{content}{icon}',

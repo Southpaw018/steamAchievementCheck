@@ -25,6 +25,10 @@ abbr[title] {
     margin: auto;
 }
 
+.clearDiv {
+    clear: both;
+}
+
 .playerFilter {
     -ms-column-count: 2;
     -moz-column-count: 2;
@@ -48,8 +52,8 @@ abbr[title] {
 .mainTable td:first-child {width: 475px;}
 .mainTable td:first-child small {color: #bbbbbb;}
 
-.mainTable .earned {color: #00cc00;}
-.mainTable .unearned {color: #000080;}
+.earned {color: #00cc00;}
+.unearned {color: #000080;}
 
 .mainTable td:last-child {text-align: right;}
 
