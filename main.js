@@ -116,9 +116,9 @@ function updateAllRowVisibility() {
 
 function updateRowVisibility($tr) {
     if ($tr.find('li[data-hideid!=true][data-hidetype!=true]').length) {
-        $tr.show();
+        $tr.css('display', '');
     } else {
-        $tr.hide();
+        $tr.css('display', 'none');
     }
 }
 
