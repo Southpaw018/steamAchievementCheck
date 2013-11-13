@@ -57,6 +57,7 @@ abbr[title] {
 
 .mainTable td:last-child {text-align: right;}
 
+tr[data-hidetest=true],
 li[data-hideid=true],
 li[data-hidetype=true] {
     display: none;

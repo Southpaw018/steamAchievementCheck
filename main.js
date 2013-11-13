@@ -1,12 +1,17 @@
 $(document).ready(function() {
     var $mainTable = $('#mainTable'),
-        $tbody = $mainTable.find('tbody');
+        $tbody = $mainTable.find('tbody'),
+        $nonTestAchvs;
 
     $.each(achievements, function() {
         if (this.name) {
             var $tr = $('<tr></tr>'),
                 $list = $('<ul class="earnedUnearnedList"></ul>'),
-                percent;
+                percent = this.percent || 0;
+
+            if (percent < 0.1) {
+                $tr.addClass('testAchievement');
+            }
 
             if (this.earned) {
                 $.each(this.earned, function(index, id) {
@@ -27,11 +32,9 @@ $(document).ready(function() {
 
             $tr.append($('<td></td>').append($list));
 
-            percent = this.percent || 0;
-            testAchievement = (percent > 0 && percent < 0.1) ? true : false;
-            $tr.append($('<td class="percent"></td>').attr('data-testAchievement',testAchievement)
+            $tr.append($('<td></td>')
                 .append($('<abbr></abbr>').attr('title', percent + '%')
-                        .append(percent.toFixed(2) + '%')
+                    .append(percent.toFixed(2) + '%')
             ));
 
             $tbody.append($tr);
@@ -46,15 +49,9 @@ $(document).ready(function() {
         $('#playerFilter').append(li);
     });
 
+    $nonTestAchvs = $mainTable.find('tr:not(.testAchievement)');
     $.each(players, function(id) {
-        if ($('#mainTable').find('li.unearned[data-id=' + id + ']') //find all unearned achievements for this player...
-            .closest('tr')
-            .find('td.percent:not([data-testachievement=true])') //...that are not test achievements
-            .length == 0) {
-            /*$('#playerFilter input[id=' + id + ']')
-                .attr('checked',false)
-                .attr('disabled',true)
-                .change();*/
+        if (!$nonTestAchvs.find('li.unearned[data-id=' + id + ']').length) {
             $('#playerFilter label[for=' + id + ']').addClass('earned');
         }
     });
@@ -86,16 +83,15 @@ $(document).ready(function() {
     });
 
     $('#playerFilter input:not([id=toggleAllPlayers])').change(function(evt) {
-        var allPlayersSelected = true;
-        var checkboxes = $('#playerFilter input:not([id=toggleAllPlayers])');
-        if (checkboxes.filter(':checked').length < checkboxes.length) {allPlayersSelected = false;}
-        $('#playerFilter #toggleAllPlayers').prop('checked',allPlayersSelected);
-
         var hide = !evt.currentTarget.checked;
+
+        $('#toggleAllPlayers').prop('checked', !$('#playerFilter input:not(:checked):not([id=toggleAllPlayers])').length);
+
         $('#mainTable .earnedUnearnedList li[data-id=' + evt.currentTarget.id + ']').each(function() {
             var $this = $(this);
             $this.attr('data-hideid', hide);
         });
+
         updateAllRowVisibility();
     });
 
@@ -122,7 +118,7 @@ function updateAllRowVisibility() {
 }
 
 function updateRowVisibility($tr) {
-    if ($tr.find('li[data-hideid!=true][data-hidetype!=true]').length && !$tr.find('td[data-hidetest=true]').length) {
+    if ($tr.find('li[data-hideid!=true][data-hidetype!=true]').length) {
         $tr.show();
     } else {
         $tr.hide();
