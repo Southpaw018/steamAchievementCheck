@@ -109,11 +109,9 @@ $(document).ready(function() {
     });
 
     $('#hideTestAchievements').change(function(evt) {
-        $('#mainTable .percent[data-testAchievement=true]').each(function() {
-            var $this = $(this);
-            $this.attr('data-hidetest', evt.currentTarget.checked);
+        $('#mainTable tr.testAchievement').each(function() {
+            $(this).attr('data-hidetest', evt.currentTarget.checked);
         });
-        updateAllRowVisibility();
     });
 });
 

@@ -62,8 +62,8 @@ li[data-hidetype=true] {
     display: none;
 }
 
-fieldset.achievements,
-fieldset.special {
+.achievements,
+.special {
     float: left;
     width: 210px;
 }
@@ -71,3 +71,4 @@ fieldset.special {
 fieldset.special {
     float: right;
 }
+
