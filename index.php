@@ -111,30 +111,41 @@ function getPlayerStats($app, $steamid) {
     </head>
     <body>
         <section class="main">
-            <form class="filters">
-                <fieldset>
-                    <legend>Show players</legend>
-                    <ul id="playerFilter" class="playerFilter">
-                        <li>
-                            <input type="checkbox" id="toggleAllPlayers" checked />
-                            <label for="toggleAllPlayers">All</label>
-                        </li>
-                    </ul>
-                </fieldset>
-                <fieldset>
-                    <legend>Show achievements</legend>
-                    <ul id="earnedUnearnedFilter">
-                        <li>
-                            <input type="checkbox" value="earned" id="earnedFilter" checked />
-                            <label for="earnedFilter">Earned</label>
-                        </li>
-                        <li>
-                            <input type="checkbox" value="unearned" id="unearnedFilter" checked />
-                            <label for="unearnedFilter">Unearned</label>
-                        </li>
-                    </ul>
-                </fieldset>
-            </form>
+            <div id="filters">
+                <form>
+                    <fieldset>
+                        <legend>Show players</legend>
+                        <ul id="playerFilter" class="playerFilter">
+                            <li>
+                                <input type="checkbox" id="toggleAllPlayers" checked />
+                                <label for="toggleAllPlayers">All</label>
+                            </li>
+                        </ul>
+                    </fieldset>
+                    <fieldset class="achievements">
+                        <legend>Show achievements</legend>
+                        <ul id="earnedUnearnedFilter">
+                            <li>
+                                <input type="checkbox" value="earned" id="earnedFilter" checked />
+                                <label for="earnedFilter">Earned</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" value="unearned" id="unearnedFilter" checked />
+                                <label for="unearnedFilter">Unearned</label>
+                            </li>
+                        </ul>
+                    </fieldset>
+                    <fieldset class="special">
+                        <legend>Special</legend>
+                        <ul>
+                            <li>
+                                <input type="checkbox" value="hideTest" id="hideTestAchievements" />
+                                <label for="hideTestAchievements">Hide &lt;0.1% earned</label>
+                            </li>
+                        </ul>
+                    </fieldset>
+                </form>
+            </div>
             <table id="mainTable" class="mainTable">
                 <thead>
                     <tr>

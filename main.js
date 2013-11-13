@@ -28,8 +28,9 @@ $(document).ready(function() {
             $tr.append($('<td></td>').append($list));
 
             percent = this.percent || 0;
-            $tr.append($('<td></td>').append(
-                $('<abbr></abbr>').attr('title', percent + '%')
+            testAchievement = (percent > 0 && percent < 0.1) ? true : false;
+            $tr.append($('<td class="percent"></td>').attr('data-testAchievement',testAchievement)
+                .append($('<abbr></abbr>').attr('title', percent + '%')
                         .append(percent.toFixed(2) + '%')
             ));
 
@@ -57,10 +58,12 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
+    $('#filters input:not([id=hideTestAchievements])').prop('checked',true);
+    $('#filters input[id=hideTestAchievements]').prop('checked',false);
 
     $('#toggleAllPlayers').change(function(evt) {
         var checked = evt.currentTarget.checked;
-        $('#playerFilter input[id]').prop('checked', checked);
+        $('#playerFilter input:not([id=toggleAllPlayers])').prop('checked', checked);
 
         $('#mainTable .earnedUnearnedList li').each(function() {
             var $this = $(this);
@@ -69,7 +72,12 @@ $(document).ready(function() {
         updateAllRowVisibility();
     });
 
-    $('#playerFilter input[id]').change(function(evt) {
+    $('#playerFilter input:not([id=toggleAllPlayers])').change(function(evt) {
+        var allPlayersSelected = true;
+        var checkboxes = $('#playerFilter input:not([id=toggleAllPlayers])');
+        if (checkboxes.filter(':checked').length < checkboxes.length) {allPlayersSelected = false;}
+        $('#playerFilter #toggleAllPlayers').prop('checked',allPlayersSelected);
+
         var hide = !evt.currentTarget.checked;
         $('#mainTable .earnedUnearnedList li[data-id=' + evt.currentTarget.id + ']').each(function() {
             var $this = $(this);
@@ -87,6 +95,13 @@ $(document).ready(function() {
         });
     });
 
+    $('#hideTestAchievements').change(function(evt) {
+        $('#mainTable .percent[data-testAchievement=true]').each(function() {
+            var $this = $(this);
+            $this.attr('data-hidetest', evt.currentTarget.checked);
+        });
+        updateAllRowVisibility();
+    });
 });
 
 function updateAllRowVisibility() {
@@ -96,7 +111,7 @@ function updateAllRowVisibility() {
 }
 
 function updateRowVisibility($tr) {
-    if ($tr.find('li[data-hideid!=true][data-hidetype!=true]').length) {
+    if ($tr.find('li[data-hideid!=true][data-hidetype!=true]').length && !$tr.find('td[data-hidetest=true]').length) {
         $tr.show();
     } else {
         $tr.hide();
