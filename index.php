@@ -111,7 +111,7 @@ function getPlayerStats($app, $steamid) {
     </head>
     <body>
         <section class="main">
-            <div id="filters">
+            <div id="filters" class="filters">
                 <form>
                     <fieldset>
                         <legend>Show players</legend>
@@ -144,7 +144,6 @@ function getPlayerStats($app, $steamid) {
                             </li>
                         </ul>
                     </fieldset>
-                    <div class="clearDiv"></div>
                 </form>
             </div>
             <table id="mainTable" class="mainTable">
