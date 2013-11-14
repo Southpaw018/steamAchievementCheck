@@ -21,6 +21,7 @@ $players = array(
     '76561197972658071' => 'Chuffy',
     '76561197996816207' => 'Master',
     '76561197998922044' => 'Joe',
+    '76561197986608136' => 'Dagordae',
 );
 
 uasort($players, function($a, $b) {
