@@ -20,7 +20,7 @@ abbr[title] {
     width: 725px;
 }
 
-#filters {
+.filters {
     width: 495px;
     margin: auto;
 }
@@ -41,6 +41,7 @@ abbr[title] {
 
 .mainTable {
     border-collapse: collapse;
+    clear: both;
 }
 
 .mainTable th,
@@ -57,17 +58,21 @@ abbr[title] {
 
 .mainTable td:last-child {text-align: right;}
 
-li[data-hideid=true],
-li[data-hidetype=true] {
+[data-hidetest=true],
+[data-hideid=true],
+[data-hidetype=true] {
     display: none;
 }
 
-fieldset.achievements,
-fieldset.special {
-    float: left;
+.achievements,
+.special {
+    margin-bottom: 1em;
     width: 210px;
 }
-
-fieldset.special {
+.achievements {
+    float: left;
+}
+.special {
     float: right;
 }
+
