@@ -68,8 +68,8 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-    $('#filters input:not([id=hideTestAchievements])').prop('checked',true);
-    $('#filters input[id=hideTestAchievements]').prop('checked',false);
+    $('#filters input:not([id=hideTestAchievements])').prop('checked', true);
+    $('#hideTestAchievements').prop('checked', false);
 
     $('#toggleAllPlayers').change(function(evt) {
         var checked = evt.currentTarget.checked;
