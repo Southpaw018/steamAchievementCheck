@@ -68,6 +68,9 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
+    $('#filters input:not([id=hideTestAchievements])').prop('checked',true);
+    $('#filters input[id=hideTestAchievements]').prop('checked',false);
+
     $('#toggleAllPlayers').change(function(evt) {
         var checked = evt.currentTarget.checked;
         $('#playerFilter input:not([id=toggleAllPlayers])').prop('checked', checked);
