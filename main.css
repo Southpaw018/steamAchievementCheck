@@ -89,3 +89,10 @@ abbr[title] {
 .special {
     float: right;
 }
+
+.timeProfile {
+    text-align: right;
+    font-style: italic;
+    color: #555555;
+    margin-right: 20px;
+}

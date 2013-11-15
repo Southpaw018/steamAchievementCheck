@@ -1,4 +1,6 @@
 <?php
+$phpStartTime = microtime(true);
+
 require('apiKey.php');
 
 define('OFFLINE_FILE', 'testData.php');
@@ -94,10 +96,14 @@ function getPlayerAchievements($app, $steamid) {
 function getPlayerStats($app, $steamid) {
     return "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en";
 }
+
+$phpEndTime = microtime(true);
+$phpExecutionTime = $phpEndTime - $phpStartTime;
 ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <script>var javascriptStartTime=(new Date()).getTime()</script>
         <title>Mumble Crew Steam Achievement Check</title>
         <meta charset="utf-8" />
 
@@ -117,6 +123,7 @@ function getPlayerStats($app, $steamid) {
             var achievements = <?=json_encode($achievements);?>;
             var players = <?=json_encode($players);?>;
             var errors = <?=json_encode($errors);?>;
+            var phpExecutionTime = <?=$phpExecutionTime;?>;
         </script>
     </head>
     <body>
@@ -171,6 +178,12 @@ function getPlayerStats($app, $steamid) {
                 <tbody></tbody>
             </table>
         </section>
+        <script>
+            var javascriptEndTime=(new Date()).getTime();
+            var javascriptExecutionTime = (javascriptEndTime - javascriptStartTime) / 1000;
+            var totalExecutionTime = phpExecutionTime + javascriptExecutionTime;
+            $('<p class="timeProfile">This page generated in ' + totalExecutionTime.toFixed(1) + ' seconds. [PHP: ' + phpExecutionTime.toFixed(1) + 's; JS: ' + javascriptExecutionTime.toFixed(1) + 's]</p>').appendTo($('body'));
+        </script>
     </body>
 </html>
 
