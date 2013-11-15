@@ -1,0 +1,71 @@
+/***** "Borrowed" from digitalocean.com *****/
+.flash {
+     border-radius: 4px;
+     margin: 10px 0px;
+     overflow: hidden;
+     padding: 15px 20px;
+     text-align: left;
+}
+
+.flash a {
+     font-weight: 900;
+}
+
+.flash a.close {
+     display: inline;
+     float: right;
+     margin-left: 10px;
+     width: 15px;
+}
+
+.flash.notice {
+     background-color: #C4ECC6;
+     color: #3EC042;
+}
+
+.flash.notice a {
+     color: #3EC042;
+}
+
+.flash.alert {
+     background-color: #EFC7C8;
+     color: #CC5152;
+}
+
+.flash.alert a {
+     color: #CC5152;
+}
+
+.flash.warning {
+     background-color: #FCF8E3;
+     color: #C09853;
+}
+
+.flash.warning a {
+     color: #C09853;
+}
+
+.flash.notices .title {
+     font-size: 20px;
+     font-weight: 300;
+}
+
+.flash.notices .update.created_at {
+     font-size: 12px;
+     font-weight: 300;
+}
+
+.flash.notices .show_more {
+     background-color: #94805E;
+     border-radius: 5px;
+     color: #F5F5F5;
+     cursor: pointer;
+     float: right;
+     margin: 3px 5px 0px 0px;
+     padding: 10px;
+}
+
+.flash.notices .show_more:hover {
+     background-color: #685A42;
+     color: #FFFFFF;
+}

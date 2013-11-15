@@ -1,6 +1,18 @@
 $(document).ready(function() {
-    var $mainTable = $('#mainTable'),
-    $tbody = $mainTable.find('tbody'),
+    $('#close').click(function() {
+        $(this).parent().css('display','');
+    });
+
+    if (errors.length > 0) {
+        $errors = $('#flash ul');
+        $.each(errors,function() {
+            $errors.append($('<li></li>').append(document.createTextNode(this)));
+        });
+        $('#flash').addClass('alert').css('display','block');
+    }
+
+    var $mainTable = $('#mainTable');
+    $tbody = $mainTable.find('tbody');
 
     $.each(achievements, function() {
         if (this.name) {

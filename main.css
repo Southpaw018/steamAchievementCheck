@@ -20,6 +20,20 @@ abbr[title] {
     width: 725px;
 }
 
+.flash {
+    display: none;
+}
+.flash a.close {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border: 1px solid;
+    text-align: center;
+}
+.flash.alert a.close:hover {
+    background-color: #f4d7d8;
+}
+
 .filters {
     width: 495px;
     margin: auto;
@@ -75,4 +89,3 @@ abbr[title] {
 .special {
     float: right;
 }
-

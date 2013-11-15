@@ -8,6 +8,8 @@ define("KILLING_FLOOR", 1250);
 define("PAYDAY", 24240);
 define("PAYDAY2", 218620);
 
+$errors = array();
+
 //Steam ID lookup service: http://steamid.co/
 $players = array(
     '76561197993313145' => 'Glorax',
@@ -33,6 +35,10 @@ if (empty($_GET['offline']) && (!empty($_GET['nocache']) || filemtime(OFFLINE_FI
     $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
 
     $response = @file_get_contents(getGameAchievements($app));
+    if (response === false) {
+        $errors[] = "Failure getting global achievement stats. Aborting.";
+
+    }
     $json = json_decode($response, true);
     $rawAchievements = $json['achievementpercentages']['achievements'];
     usort($rawAchievements, function($a, $b) {
@@ -46,8 +52,9 @@ if (empty($_GET['offline']) && (!empty($_GET['nocache']) || filemtime(OFFLINE_FI
 
     foreach ($players as $id => $name) {
         $response = @file_get_contents(getPlayerAchievements($app, $id));
-        if (!$response) {
-            unset($players[$id]);
+        if ($response === false) {
+            //unset($players[$id]);
+            $errors[] = "Failure getting achievements for " . $name . ". Continuing to process.";
             continue;
         }
 
@@ -94,6 +101,7 @@ function getPlayerStats($app, $steamid) {
         <title>Mumble Crew Steam Achievement Check</title>
         <meta charset="utf-8" />
 
+        <link rel="stylesheet" type="text/css" href="flash.css" />
         <link rel="stylesheet" type="text/css" href="main.css" />
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -108,10 +116,15 @@ function getPlayerStats($app, $steamid) {
         <script>
             var achievements = <?=json_encode($achievements);?>;
             var players = <?=json_encode($players);?>;
+            var errors = <?=json_encode($errors);?>;
         </script>
     </head>
     <body>
         <section class="main">
+            <div id="flash" class="flash">
+                <a id="close" class="close">&times;</a>
+                <ul></ul>
+            </div>
             <div id="filters" class="filters">
                 <form>
                     <fieldset>
