@@ -37,7 +37,7 @@ if (empty($_GET['offline']) && (!empty($_GET['nocache']) || filemtime(OFFLINE_FI
     $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
 
     $response = @file_get_contents(getGameAchievements($app));
-    if (response === false) {
+    if ($response === false) {
         $errors[] = "Failure getting global achievement stats. Aborting.";
 
     }
@@ -103,7 +103,7 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <script>var javascriptStartTime=(new Date()).getTime()</script>
+        <script>var javascriptStartTime = new Date().getTime();</script>
         <title>Mumble Crew Steam Achievement Check</title>
         <meta charset="utf-8" />
 
@@ -179,10 +179,10 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
             </table>
         </section>
         <script>
-            var javascriptEndTime=(new Date()).getTime();
-            var javascriptExecutionTime = (javascriptEndTime - javascriptStartTime) / 1000;
-            var totalExecutionTime = phpExecutionTime + javascriptExecutionTime;
-            $('<p class="timeProfile">This page generated in ' + totalExecutionTime.toFixed(1) + ' seconds. [PHP: ' + phpExecutionTime.toFixed(1) + 's; JS: ' + javascriptExecutionTime.toFixed(1) + 's]</p>').appendTo($('body'));
+            var javascriptEndTime = new Date().getTime(),
+                javascriptExecutionTime = (javascriptEndTime - javascriptStartTime) / 1000,
+                totalExecutionTime = phpExecutionTime + javascriptExecutionTime;
+            $('<p class="timeProfile">This page generated in ' + totalExecutionTime.toFixed(2) + ' seconds. [PHP: ' + phpExecutionTime.toFixed(2) + 's; JS: ' + javascriptExecutionTime.toFixed(2) + 's]</p>').appendTo($('body'));
         </script>
     </body>
 </html>
