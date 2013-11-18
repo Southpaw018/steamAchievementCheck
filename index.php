@@ -80,13 +80,14 @@ function getApiResponse($path, $app, $steamid = '') {
     }
 
     $response = file_get_contents("http://api.steampowered.com/{$path}");
-    if ($response === false) {
-        $_api_success = false;
-    } else {
+    if ($response !== false) {
         $_api_success = true;
-        file_put_contents($cachePath, preg_replace('/([^\n])?$/', "$1\n", $response));
+        $result = json_decode($response, true);
+        file_put_contents($cachePath, preg_replace('/([^\n])?$/', "$1\n", json_encode($result)));
+        return $result;
     }
-    return json_decode($response, true);
+
+    $_api_success = false;
 }
 function apiSucceeded() {
     global $_api_success;
