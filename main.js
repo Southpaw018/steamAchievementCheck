@@ -11,7 +11,7 @@ $(document).ready(function() {
         $('#flash').addClass('alert').css('display', 'block');
     }
 
-    var $mainTable = $('#mainTable'),
+    var $mainTable = $('#mainTable');
     var $tbody = $mainTable.find('tbody');
     var $nonTestAchvs;
 
