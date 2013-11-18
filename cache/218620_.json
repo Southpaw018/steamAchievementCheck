@@ -1,0 +1,288 @@
+{
+	"achievementpercentages": {
+		"achievements": [
+			{
+				"name": "no_one_cared_who_i_was",
+				"percent": 81.1588134765625
+			},
+			{
+				"name": "no_turning_back",
+				"percent": 80.381134033203125
+			},
+			{
+				"name": "how_do_you_like_me_now",
+				"percent": 77.755584716796875
+			},
+			{
+				"name": "tip_the_scales",
+				"percent": 74.475128173828125
+			},
+			{
+				"name": "you_gotta_start_somewhere",
+				"percent": 73.169471740722656
+			},
+			{
+				"name": "armed_to_the_teeth",
+				"percent": 72.285598754882813
+			},
+			{
+				"name": "would_you_like_your_receipt",
+				"percent": 69.751792907714844
+			},
+			{
+				"name": "guilty_of_crime",
+				"percent": 67.384109497070313
+			},
+			{
+				"name": "gone_in_30_seconds",
+				"percent": 57.339443206787109
+			},
+			{
+				"name": "spend_money_to_make_money",
+				"percent": 56.754673004150391
+			},
+			{
+				"name": "yeah_hes_a_gold_digger",
+				"percent": 51.437877655029297
+			},
+			{
+				"name": "f_in_chemistry",
+				"percent": 50.077255249023437
+			},
+			{
+				"name": "going_places",
+				"percent": 45.559249877929688
+			},
+			{
+				"name": "fish_ai",
+				"percent": 42.642368316650391
+			},
+			{
+				"name": "masked_villain",
+				"percent": 42.555164337158203
+			},
+			{
+				"name": "lord_of_war",
+				"percent": 41.812252044677734
+			},
+			{
+				"name": "hot_wheels",
+				"percent": 41.328834533691406
+			},
+			{
+				"name": "diamonds_are_forever",
+				"percent": 39.296333312988281
+			},
+			{
+				"name": "murphys_laws",
+				"percent": 36.427654266357422
+			},
+			{
+				"name": "frappucino_to_go_please",
+				"percent": 33.369712829589844
+			},
+			{
+				"name": "fully_loaded",
+				"percent": 30.049848556518555
+			},
+			{
+				"name": "armed_and_dangerous",
+				"percent": 29.975070953369141
+			},
+			{
+				"name": "the_first_line",
+				"percent": 27.761289596557617
+			},
+			{
+				"name": "going_all_in",
+				"percent": 27.090930938720703
+			},
+			{
+				"name": "i_wasnt_even_there",
+				"percent": 21.939554214477539
+			},
+			{
+				"name": "king_of_the_hill",
+				"percent": 19.251651763916016
+			},
+			{
+				"name": "pink_panther",
+				"percent": 16.473814010620117
+			},
+			{
+				"name": "doctor_fantastic",
+				"percent": 16.279598236083984
+			},
+			{
+				"name": "lets_do_this",
+				"percent": 15.695232391357422
+			},
+			{
+				"name": "big_deal",
+				"percent": 14.436161041259766
+			},
+			{
+				"name": "i_knew_what_i_was_doing_was_wrong",
+				"percent": 13.971739768981934
+			},
+			{
+				"name": "iron_man",
+				"percent": 13.704769134521484
+			},
+			{
+				"name": "you_shall_not_pass",
+				"percent": 11.890232086181641
+			},
+			{
+				"name": "bullet_dodger",
+				"percent": 10.120864868164062
+			},
+			{
+				"name": "weapon_collector",
+				"percent": 9.1368494033813477
+			},
+			{
+				"name": "like_an_angry_bear",
+				"percent": 8.5238866806030273
+			},
+			{
+				"name": "caribbean_pirate",
+				"percent": 8.4504241943359375
+			},
+			{
+				"name": "big_shot",
+				"percent": 7.6426377296447754
+			},
+			{
+				"name": "halloween_9",
+				"percent": 6.5409011840820312
+			},
+			{
+				"name": "window_cleaner",
+				"percent": 6.3382973670959473
+			},
+			{
+				"name": "im_a_healer_tank_damage_dealer",
+				"percent": 6.0541481971740723
+			},
+			{
+				"name": "halloween_nightmare_1",
+				"percent": 4.2596192359924316
+			},
+			{
+				"name": "armored_11",
+				"percent": 3.9272687435150146
+			},
+			{
+				"name": "armored_2",
+				"percent": 3.7003130912780762
+			},
+			{
+				"name": "bilbo_baggin",
+				"percent": 2.7668225765228271
+			},
+			{
+				"name": "short_fuse",
+				"percent": 2.6936628818511963
+			},
+			{
+				"name": "halloween_nightmare_2",
+				"percent": 2.6658744812011719
+			},
+			{
+				"name": "halloween_nightmare_3",
+				"percent": 2.4187085628509521
+			},
+			{
+				"name": "most_wanted",
+				"percent": 2.2990665435791016
+			},
+			{
+				"name": "armored_3",
+				"percent": 2.2880523204803467
+			},
+			{
+				"name": "halloween_nightmare_4",
+				"percent": 2.2680447101593018
+			},
+			{
+				"name": "the_wire",
+				"percent": 1.7904870510101318
+			},
+			{
+				"name": "halloween_2",
+				"percent": 1.1403378248214722
+			},
+			{
+				"name": "halloween_3",
+				"percent": 0.93177276849746704
+			},
+			{
+				"name": "halloween_8",
+				"percent": 0.90307480096817017
+			},
+			{
+				"name": "halloween_10",
+				"percent": 0.89003944396972656
+			},
+			{
+				"name": "armored_6",
+				"percent": 0.83577620983123779
+			},
+			{
+				"name": "halloween_6",
+				"percent": 0.82486289739608765
+			},
+			{
+				"name": "halloween_1",
+				"percent": 0.74937927722930908
+			},
+			{
+				"name": "halloween_5",
+				"percent": 0.70501875877380371
+			},
+			{
+				"name": "halloween_4",
+				"percent": 0.7035030722618103
+			},
+			{
+				"name": "halloween_7",
+				"percent": 0.57405930757522583
+			},
+			{
+				"name": "armored_1",
+				"percent": 0.55748724937438965
+			},
+			{
+				"name": "armored_5",
+				"percent": 0.39692041277885437
+			},
+			{
+				"name": "armored_4",
+				"percent": 0.34124243259429932
+			},
+			{
+				"name": "armored_10",
+				"percent": 0.20058225095272064
+			},
+			{
+				"name": "armored_9",
+				"percent": 0.16986335813999176
+			},
+			{
+				"name": "armored_7",
+				"percent": 0.16713503003120422
+			},
+			{
+				"name": "armored_8",
+				"percent": 0.15490810573101044
+			},
+			{
+				"name": "test",
+				"percent": 0.0015157348243519664
+			}
+		]
+		
+	}
+}
+

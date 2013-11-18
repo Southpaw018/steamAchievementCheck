@@ -3,7 +3,8 @@ $phpStartTime = microtime(true);
 
 require('apiKey.php');
 
-define('OFFLINE_FILE', 'testData.php');
+define('CACHE_DIR', 'cache/');
+define('CACHE_TTL', 300);
 
 //Games we play a lot
 define("KILLING_FLOOR", 1250);
@@ -33,68 +34,88 @@ uasort($players, function($a, $b) {
     return $a < $b ? -1 : 1;
 });
 
-if (empty($_GET['offline']) && (!empty($_GET['nocache']) || filemtime(OFFLINE_FILE) + 300 < time())) {
-    $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
+$app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
 
-    $response = @file_get_contents(getGameAchievements($app));
-    if ($response === false) {
-        $errors[] = "Failure getting global achievement stats. Aborting.";
+$response = getGameAchievements($app);
+if (!apiSucceeded()) $errors[] = "Failure getting global achievement stats. Aborting.";
 
-    }
-    $json = json_decode($response, true);
-    $rawAchievements = $json['achievementpercentages']['achievements'];
-    usort($rawAchievements, function($a, $b) {
-        return strcasecmp($a['name'], $b['name']);
-    });
+$rawAchievements = $response['achievementpercentages']['achievements'];
+usort($rawAchievements, function($a, $b) { return strcasecmp($a['name'], $b['name']); });
 
-    $achievements = array();
-    foreach ($rawAchievements as $achievement) {
-        $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
-    }
+$achievements = array();
+foreach ($rawAchievements as $achievement) {
+    $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
+}
 
-    foreach ($players as $id => $name) {
-        $response = @file_get_contents(getPlayerAchievements($app, $id));
-        if ($response === false) {
-            //unset($players[$id]);
-            $errors[] = "Failure getting achievements for " . $name . ". Continuing to process.";
-            continue;
-        }
-
-        $json = json_decode($response, true);
-        $playerAchievements = $json['playerstats']['achievements'];
-
-        foreach ($playerAchievements as $achievement) {
-            $achData = &$achievements[$achievement['apiname']];
-            $achData[$achievement['achieved'] ? 'earned' : 'unearned'][] = (string) $id;
-
-            if (!isset($achData['name'])) $achData['name'] = $achievement['name'];
-            if (!isset($achData['description'])) $achData['description'] = $achievement['description'];
-        }
-
-        usleep(100000);
+foreach ($players as $id => $name) {
+    $response = getPlayerAchievements($app, $id);
+    if (!apiSucceeded()) {
+        $errors[] = "Failure getting achievements for {$name}. Continuing to process.";
+        continue;
     }
 
-    // Update offline file
-    $offline_data = array('achievements' => $achievements, 'players' => $players);
-    file_put_contents(OFFLINE_FILE, serialize($offline_data));
-} else {
-    $offline_data = unserialize(file_get_contents(OFFLINE_FILE));
-    foreach ($offline_data as $var => $value) {
-        $$var = $value;
+    $playerAchievements = $response['playerstats']['achievements'];
+
+    foreach ($playerAchievements as $achievement) {
+        $achData = &$achievements[$achievement['apiname']];
+        $achData[$achievement['achieved'] ? 'earned' : 'unearned'][] = (string) $id;
+
+        if (!isset($achData['name'])) $achData['name'] = $achievement['name'];
+        if (!isset($achData['description'])) $achData['description'] = $achievement['description'];
     }
+
+    usleep(100000);
 }
 
 //web API HTML docs: https://developer.valvesoftware.com/wiki/Steam_Web_API
 //web API function list: http://api.steampowered.com/ISteamWebAPIUtil/GetSupportedAPIList/v0001/
 //full app list: http://api.steampowered.com/ISteamApps/GetAppList/v0002/
+function getApiResponse($path, $app, $steamid = '') {
+    global $_api_success;
+
+    $cachePath = getCachePath($app, $steamid);
+    if (useCache($cachePath)) {
+        $_api_success = true;
+        return json_decode(file_get_contents($cachePath), true);
+    }
+
+    $response = file_get_contents("http://api.steampowered.com/{$path}");
+    if ($response === false) {
+        $_api_success = false;
+    } else {
+        $_api_success = true;
+        file_put_contents($cachePath, preg_replace('/([^\n])?$/', "$1\n", $response));
+    }
+    return json_decode($response, true);
+}
+function apiSucceeded() {
+    global $_api_success;
+    return $_api_success;
+}
+
 function getGameAchievements($app) {
-    return "http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={$app}";
+    return getApiResponse("ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={$app}", $app);
 }
 function getPlayerAchievements($app, $steamid) {
-    return "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en";
+    return getApiResponse("ISteamUserStats/GetPlayerAchievements/v0001/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en", $app, $steamid);
 }
 function getPlayerStats($app, $steamid) {
-    return "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en";
+    return getApiResponse("ISteamUserStats/GetUserStatsForGame/v0002/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en", $app, $steamid);
+}
+
+function useCache($path) {
+    if (!empty($_GET['offline'])) {
+        return file_exists($path);
+    }
+
+    if (!empty($_GET['nocache'])) {
+        return false;
+    }
+
+    return file_exists($path) && filemtime($path) + CACHE_TTL > time();
+}
+function getCachePath($app, $steamid) {
+    return CACHE_DIR . "{$app}_{$steamid}.json";
 }
 
 $phpEndTime = microtime(true);
