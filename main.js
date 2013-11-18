@@ -1,18 +1,18 @@
 $(document).ready(function() {
     $('#close').click(function() {
-        $(this).parent().css('display','');
+        $(this).parent().css('display', '');
     });
 
-    if (errors.length > 0) {
+    if (errors.length) {
         $errors = $('#flash ul');
-        $.each(errors,function() {
+        $.each(errors, function() {
             $errors.append($('<li></li>').append(document.createTextNode(this)));
         });
-        $('#flash').addClass('alert').css('display','block');
+        $('#flash').addClass('alert').css('display', 'block');
     }
 
-    var $mainTable = $('#mainTable');
-    $tbody = $mainTable.find('tbody');
+    var $mainTable = $('#mainTable'),
+        $tbody = $mainTable.find('tbody');
 
     $.each(achievements, function() {
         if (this.name) {
@@ -133,12 +133,13 @@ function updateRowVisibility($tr) {
 }
 
 function updatePlayerCompletion() {
-    $('#playerFilter label').toggleClass('earned',false);
+    $('#playerFilter label').toggleClass('earned', false);
 
     $unearnedAchvs = $('#mainTable li.unearned');
     $.each(players, function(id) {
         if (!$unearnedAchvs.filter('[data-id=' + id + ']:visible').length) {
-            $('#playerFilter label[for=' + id + ']').toggleClass('earned',true);
+            $('#playerFilter label[for=' + id + ']').toggleClass('earned', true);
         }
     });
 }
+
