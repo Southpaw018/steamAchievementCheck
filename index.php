@@ -116,6 +116,9 @@ function useCache($path) {
     return file_exists($path) && filemtime($path) + CACHE_TTL > time();
 }
 function getCachePath($app, $steamid) {
+    if (!is_dir(CACHE_DIR)) {
+        mkdir(CACHE_DIR);
+    }
     return CACHE_DIR . "{$app}_{$steamid}.json";
 }
 
