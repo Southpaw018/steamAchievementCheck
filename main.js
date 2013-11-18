@@ -12,7 +12,8 @@ $(document).ready(function() {
     }
 
     var $mainTable = $('#mainTable'),
-        $tbody = $mainTable.find('tbody');
+    var $tbody = $mainTable.find('tbody');
+    var $nonTestAchvs;
 
     $.each(achievements, function() {
         if (this.name) {
@@ -60,6 +61,13 @@ $(document).ready(function() {
         $('#playerFilter').append(li);
     });
 
+    $nonTestAchvs = $mainTable.find('tr:not(.testAchievement)');
+    $.each(players, function(id) {
+        if (!$nonTestAchvs.find('li.unearned[data-id=' + id + ']').length) {
+            $('#playerFilter label[for=' + id + ']').addClass('earned');
+        }
+    });
+
     $mainTable.tablesorter({
         theme: 'grey',
         headerTemplate: '{content}{icon}',
@@ -69,8 +77,6 @@ $(document).ready(function() {
     });
 
     $mainTable.find('li').tsort();
-
-    updatePlayerCompletion();
 });
 
 $(document).ready(function() {
@@ -98,7 +104,6 @@ $(document).ready(function() {
             $this.attr('data-hideid', hide);
         });
 
-        updatePlayerCompletion();
         updateAllRowVisibility();
     });
 
@@ -131,15 +136,3 @@ function updateRowVisibility($tr) {
         $tr.css('display', 'none');
     }
 }
-
-function updatePlayerCompletion() {
-    $('#playerFilter label').toggleClass('earned', false);
-
-    $unearnedAchvs = $('#mainTable li.unearned');
-    $.each(players, function(id) {
-        if (!$unearnedAchvs.filter('[data-id=' + id + ']:visible').length) {
-            $('#playerFilter label[for=' + id + ']').toggleClass('earned', true);
-        }
-    });
-}
-
