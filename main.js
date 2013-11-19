@@ -1,19 +1,19 @@
 $(document).ready(function() {
     $('#close').click(function() {
-        $(this).parent().css('display','');
+        $(this).parent().css('display', '');
     });
 
-    if (errors.length > 0) {
+    if (errors.length) {
         $errors = $('#flash ul');
-        $.each(errors,function() {
+        $.each(errors, function() {
             $errors.append($('<li></li>').append(document.createTextNode(this)));
         });
-        $('#flash').addClass('alert').css('display','block');
+        $('#flash').addClass('alert').css('display', 'block');
     }
 
-    var $mainTable = $('#mainTable');
-    var $tbody = $mainTable.find('tbody');
-    var $nonTestAchvs;
+    var $mainTable = $('#mainTable'),
+        $tbody = $mainTable.find('tbody'),
+        $nonTestAchvs;
 
     $.each(achievements, function() {
         if (this.name) {
