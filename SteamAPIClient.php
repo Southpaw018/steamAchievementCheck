@@ -40,22 +40,28 @@ class SteamAPIClient {
         return $this->get("ISteamUserStats/GetUserStatsForGame/v0002/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en", $app, $steamid);
     }
 
+    public function getPlayerProfileSummaries($steamidlist = array()) {
+        return $this->get("ISteamUser/GetPlayerSummaries/v0002/?key=" . API_KEY . "&steamids=" . implode(',', $steamidlist));
+    }
+
     public function lastCallSucceeded() {
         return $this->lastCallSucceeded;
     }
 
-    protected function get($path, $app, $steamid = '') {
-        $cachePath = $this->getCachePath($app, $steamid);
-        if ($this->useCache($cachePath)) {
-            $this->lastCallSucceeded = true;
-            return json_decode(file_get_contents($cachePath), true);
+    protected function get($path, $app = '', $steamid = '') {
+        if ($steamid != '') { //Don't cache player data for now
+            $cachePath = $this->getCachePath($app, $steamid);
+            if ($this->useCache($cachePath)) {
+                $this->lastCallSucceeded = true;
+                return json_decode(file_get_contents($cachePath), true);
+            }
         }
 
         $response = file_get_contents("{$this->domain}/{$path}");
         if ($response !== false) {
             $this->lastCallSucceeded = true;
             $result = json_decode($response, true);
-            file_put_contents($cachePath, preg_replace('/([^\n])?$/', "$1\n", json_encode($result)));
+            if ($steamid != '') {file_put_contents($cachePath, preg_replace('/([^\n])?$/', "$1\n", json_encode($result)));}
             return $result;
         }
 

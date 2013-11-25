@@ -13,40 +13,56 @@ $errors = array();
 
 //Steam ID lookup service: http://steamid.co/
 $players = array(
-    '76561197993313145' => 'Glorax',
-    '76561197970314683' => 'Deagle',
-    '76561197991652633' => 'Oten',
-    '76561198015208150' => 'Fargi',
-    '76561197966611402' => 'Moof',
-    '76561198006448879' => 'Scibs',
-    '76561197993231027' => 'Banana',
-    '76561198014895533' => 'Bukkithead',
-    '76561197972658071' => 'Chuffy',
-    '76561197996816207' => 'Master',
-    '76561197998922044' => 'Joe',
-    '76561197986608136' => 'Dagordae',
+    '76561197993313145' => NULL, //Glorax
+    '76561197970314683' => NULL, //Deagle
+    '76561197991652633' => NULL, //Oten
+    '76561198015208150' => NULL, //Fargi
+    '76561197966611402' => NULL, //Moof
+    '76561198006448879' => NULL, //Scibs
+    '76561197993231027' => NULL, //Banana
+    '76561198014895533' => NULL, //Bukkithead
+    '76561197972658071' => NULL, //Chuffy
+    '76561197996816207' => NULL, //Master
+    '76561197998922044' => NULL, //Joe
+    '76561197986608136' => NULL  //Dagordae
 );
 
-uasort($players, function($a, $b) {
-    if ($a === $b) return 0;
-    return $a < $b ? -1 : 1;
-});
-
+//Instantiate API, get achievement list, sort, and set up array with name and and global %
 $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
-
 $api = new SteamAPIClient(API_KEY, $_GET);
 $response = $api->getGameAchievements($app);
 if (!$api->lastCallSucceeded()) $errors[] = "Failure getting global achievement stats. Aborting.";
 
 $rawAchievements = $response['achievementpercentages']['achievements'];
-usort($rawAchievements, function($a, $b) { return strcasecmp($a['name'], $b['name']); });
+usort($rawAchievements, function($a, $b) {
+    return strcasecmp($a['name'], $b['name']);
+});
 
 $achievements = array();
 foreach ($rawAchievements as $achievement) {
     $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
 }
 
-foreach ($players as $id => $name) {
+//Get player names and info, then sort them by name
+$response = $api->getPlayerProfileSummaries(array_keys($players));
+foreach ($response['response']['players'] as $player) {
+    $playerSteamID = $player['steamid'];
+
+    $players[$playerSteamID] = array(
+        'name' => $player['personaname'],
+        'avatarSmallURL' => $player['avatar'],
+        'online' => $player['personastate'] == 1 ? 'true' : 'false'
+    );
+}
+
+uasort($players, function($a, $b) {
+    if ($a === $b) return 0;
+    return $a['name'] < $b['name'] ? -1 : 1;
+});
+
+//Add player status to each achievement
+foreach ($players as $id => $data) {
+    $name = $data['name'];
     $response = $api->getPlayerAchievements($app, $id);
     if (!$api->lastCallSucceeded()) {
         $errors[] = "Failure getting achievements for {$name}. Continuing to process.";

@@ -27,12 +27,12 @@ $(document).ready(function() {
 
             if (this.earned) {
                 $.each(this.earned, function(index, id) {
-                    $list.append($('<li class="earned"></li>').append(document.createTextNode(players[id])).attr('data-id', id));
+                    $list.append($('<li class="earned"></li>').append(document.createTextNode(players[id].name)).attr('data-id', id));
                 });
             }
             if (this.unearned) {
                 $.each(this.unearned, function(index, id) {
-                    $list.append($('<li class="unearned"></li>').append(document.createTextNode(players[id])).attr('data-id', id));
+                    $list.append($('<li class="unearned"></li>').append(document.createTextNode(players[id].name)).attr('data-id', id));
                 });
             }
 
@@ -54,7 +54,7 @@ $(document).ready(function() {
     });
 
     $.each(players, function(id) {
-        var name = players[id],
+        var name = players[id].name,
             li = $('<li></li>');
         li.append('<input type="checkbox" id="' + id + '" checked />');
         li.append('<label for="' + id + '">' + name + '</label>');
