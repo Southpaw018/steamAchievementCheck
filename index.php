@@ -51,7 +51,8 @@ foreach ($response as $player) {
     $players[$playerSteamID] = array(
         'name' => $player['personaname'],
         'avatarSmallURL' => $player['avatar'],
-        'online' => $player['personastate'] == 1 ? 'true' : 'false'
+        'avatarMediumURL' => $player['avatarmedium'],
+        //'online' => $player['personastate'] == 1 ? 'true' : 'false'
     );
 }
 
