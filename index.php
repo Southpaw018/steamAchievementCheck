@@ -57,7 +57,9 @@ foreach ($response as $player) {
 }
 
 uasort($players, function($a, $b) {
-    if ($a === $b) return 0;
+    $a['name'] = strtolower($a['name']);
+    $b['name'] = strtolower($b['name']);
+    if ($a['name'] === $b['name']) return 0;
     return $a['name'] < $b['name'] ? -1 : 1;
 });
 
