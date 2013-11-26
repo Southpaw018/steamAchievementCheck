@@ -45,7 +45,7 @@ foreach ($rawAchievements as $achievement) {
 
 //Get player names and info, then sort them by name
 $response = $api->getPlayerProfileSummaries(array_keys($players));
-foreach ($response['response']['players'] as $player) {
+foreach ($response as $player) {
     $playerSteamID = $player['steamid'];
 
     $players[$playerSteamID] = array(
