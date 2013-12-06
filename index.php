@@ -157,6 +157,10 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                         <legend>Special</legend>
                         <ul>
                             <li>
+                                <input type="checkbox" value="useTextNames" id="useTextNames" />
+                                <label for="useTextNames">Use player names</label>
+                            </li>
+                            <li>
                                 <input type="checkbox" value="hideTest" id="hideTestAchievements" />
                                 <label for="hideTestAchievements">Hide &lt;0.1% earned</label>
                             </li>

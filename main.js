@@ -80,7 +80,8 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-    $('#filters input:not([id=hideTestAchievements])').prop('checked', true);
+    $('#filters fieldset:not([class=special]) input').prop('checked', true);
+    $('#filters fieldset[class=special] input').prop('checked', false);
     $('#hideTestAchievements').prop('checked', false);
 
     $('#toggleAllPlayers').change(function(evt) {
@@ -114,6 +115,10 @@ $(document).ready(function() {
             $this.attr('data-hidetype', hide);
             updateRowVisibility($this.closest('tr'));
         });
+    });
+
+    $('#useTextNames').change(function(evt) {
+        $('.earnedUnearnedList').toggleClass('textNames', evt.currentTarget.checked);
     });
 
     $('#hideTestAchievements').change(function(evt) {

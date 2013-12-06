@@ -78,10 +78,28 @@ abbr[title] {
     max-width: 64px;
 }
 
+.earnedUnearnedList.textNames li {
+    border-style: none;
+    float: none;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+}
+
+.earnedUnearnedList.textNames li img {
+    display: none;
+}
+
 .earnedUnearnedList li p {
     margin: 0;
     display: none;
 }
+
+.earnedUnearnedList.textNames li p {
+     display: inline;
+}
+
+
 .earned {
     color: #00cc00;
     border-color: #00cc00;
