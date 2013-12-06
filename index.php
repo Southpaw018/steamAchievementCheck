@@ -31,7 +31,10 @@ $players = array(
 $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
 $api = new SteamAPIClient(API_KEY, $_GET);
 $response = $api->getGameAchievements($app);
-if (!$api->lastCallSucceeded()) $errors[] = "Failure getting global achievement stats. Aborting.";
+if (!$api->lastCallSucceeded()) {
+    $errors[] = "Failure getting global achievement stats. Aborting.";
+    goto fatalErrorResume;
+}
 
 $rawAchievements = $response['achievementpercentages']['achievements'];
 usort($rawAchievements, function($a, $b) {
@@ -45,6 +48,11 @@ foreach ($rawAchievements as $achievement) {
 
 //Get player names and info, then sort them by name
 $response = $api->getPlayerProfileSummaries(array_keys($players));
+if (!$api->lastCallSucceeded()) {
+    $errors[] = "Failure getting player profiles. Aborting.";
+    goto fatalErrorResume;
+}
+
 foreach ($response as $player) {
     $playerSteamID = $player['steamid'];
 
@@ -85,6 +93,7 @@ foreach ($players as $id => $data) {
     usleep(100000);
 }
 
+fatalErrorResume: //We pick up PHP processing here in case of fatal API error
 $phpEndTime = microtime(true);
 $phpExecutionTime = $phpEndTime - $phpStartTime;
 ?>
