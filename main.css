@@ -16,8 +16,9 @@ abbr[title] {
 }
 
 .main {
-    margin: auto;
-    width: 725px;
+    margin: auto 50px;
+    min-width: 500px;
+    max-width: 985px;
 }
 
 .flash {
@@ -35,7 +36,7 @@ abbr[title] {
 }
 
 .filters {
-    width: 495px;
+    width: 500px;
     margin: auto;
 }
 
@@ -64,20 +65,36 @@ abbr[title] {
     padding: 0.5em !important;
 }
 
-.mainTable td:first-child {width: 475px;}
+/*.mainTable td:first-child {width:  60%;}*/
 .mainTable td:first-child small {color: #bbbbbb;}
 
 .earnedUnearnedList li {
     float: left;
+    padding: 3px;
+    margin: 4px;
+    border-width: 2px;
+    border-style: solid;
+    max-height: 64px;
+    max-width: 64px;
 }
+
 .earnedUnearnedList li p {
     margin: 0;
     display: none;
 }
-.earned {color: #00cc00;}
-.unearned {color: #000080;}
+.earned {
+    color: #00cc00;
+    border-color: #00cc00;
+}
+.unearned {
+    color: #000080;
+    border-color: #000080;
+}
 
-.mainTable td:last-child {text-align: right;}
+.mainTable td:last-child {
+    text-align: right;
+    width: 70px;
+}
 
 [data-hidetest=true],
 [data-hideid=true],
@@ -104,3 +121,23 @@ abbr[title] {
     margin-right: 20px;
 }
 
+@media (max-width: 639px) {
+    .mainTable td:nth-of-type(2) {
+        width: 164px; /*two avatar photos across*/
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1084px) {
+    .mainTable td:nth-of-type(2) {
+        width: 246px; /*three avatar photos across*/
+    }
+}
+
+@media (min-width: 1085px) {
+    .main {
+        margin: auto;
+    }
+    .mainTable td:nth-of-type(2) {
+        width: 328px; /*four avatar photos across*/
+    }
+}
