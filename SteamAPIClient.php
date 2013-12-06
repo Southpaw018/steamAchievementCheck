@@ -55,7 +55,7 @@ class SteamAPIClient {
             return json_decode(file_get_contents($cachePath), true);
         }
 
-        $response = file_get_contents("{$this->domain}/{$path}");
+        $response = @file_get_contents("{$this->domain}/{$path}");
         if ($response !== false) {
             $this->lastCallSucceeded = true;
             $result = json_decode($response, true);
@@ -81,7 +81,7 @@ class SteamAPIClient {
             }
         }
 
-        $response = file_get_contents("{$this->domain}/{$path}" . implode(",", $newPlayerIDsToGet));
+        $response = @file_get_contents("{$this->domain}/{$path}" . implode(",", $newPlayerIDsToGet));
         if ($response !== false) {
             $this->lastCallSucceeded = true;
             $result = json_decode($response, true);
