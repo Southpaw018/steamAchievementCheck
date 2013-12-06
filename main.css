@@ -67,6 +67,13 @@ abbr[title] {
 .mainTable td:first-child {width: 475px;}
 .mainTable td:first-child small {color: #bbbbbb;}
 
+.earnedUnearnedList li {
+    float: left;
+}
+.earnedUnearnedList li p {
+    margin: 0;
+    display: none;
+}
 .earned {color: #00cc00;}
 .unearned {color: #000080;}
 

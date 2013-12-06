@@ -27,12 +27,12 @@ $(document).ready(function() {
 
             if (this.earned) {
                 $.each(this.earned, function(index, id) {
-                    $list.append($('<li class="earned"></li>').append(document.createTextNode(players[id].name)).attr('data-id', id));
+                    $list.append($('<li class="earned"></li>').append(playerHTML(players[id])).attr('data-id', id));
                 });
             }
             if (this.unearned) {
                 $.each(this.unearned, function(index, id) {
-                    $list.append($('<li class="unearned"></li>').append(document.createTextNode(players[id].name)).attr('data-id', id));
+                    $list.append($('<li class="unearned"></li>').append(playerHTML(players[id])).attr('data-id', id));
                 });
             }
 
@@ -122,6 +122,11 @@ $(document).ready(function() {
         });
     });
 });
+
+function playerHTML(player) {
+    return $('<img />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name)
+                .add($('<p></p>').append(document.createTextNode(player.name)));
+}
 
 function updateAllRowVisibility() {
     $('#mainTable tbody tr').each(function() {
