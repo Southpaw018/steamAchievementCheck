@@ -12,88 +12,96 @@ define("PAYDAY2", 218620);
 $errors = array();
 
 //Steam ID lookup service: http://steamid.co/
-$players = array(
-    '76561197993313145' => NULL, //Glorax
-    '76561197970314683' => NULL, //Deagle
-    '76561197991652633' => NULL, //Oten
-    '76561198015208150' => NULL, //Fargi
-    '76561197966611402' => NULL, //Moof
-    '76561198006448879' => NULL, //Scibs
-    '76561197993231027' => NULL, //Banana
-    '76561198014895533' => NULL, //Bukkithead
-    '76561197972658071' => NULL, //Chuffy
-    '76561197996816207' => NULL, //Master
-    '76561197998922044' => NULL, //Joe
-    '76561197986608136' => NULL  //Dagordae
+$player_ids = array(
+    '76561197993313145', //Glorax
+    '76561197970314683', //Deagle
+    '76561197991652633', //Oten
+    '76561198015208150', //Fargi
+    '76561197966611402', //Moof
+    '76561198006448879', //Scibs
+    '76561197993231027', //Banana
+    '76561198014895533', //Bukkithead
+    '76561197972658071', //Chuffy
+    '76561197996816207', //Master
+    '76561197998922044', //Joe
+    '76561197986608136', //Dagordae
 );
 
-//Instantiate API, get achievement list, sort, and set up array with name and and global %
 $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
-$api = new SteamAPIClient(API_KEY, $_GET);
-$response = $api->getGameAchievements($app);
-if (!$api->lastCallSucceeded()) {
-    $errors[] = "Failure getting global achievement stats. Aborting.";
-    goto fatalErrorResume;
-}
+list($achievements, $players) = getPageData($app, $player_ids, $errors);
 
-$rawAchievements = $response['achievementpercentages']['achievements'];
-usort($rawAchievements, function($a, $b) {
-    return strcasecmp($a['name'], $b['name']);
-});
-
-$achievements = array();
-foreach ($rawAchievements as $achievement) {
-    $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
-}
-
-//Get player names and info, then sort them by name
-$response = $api->getPlayerProfileSummaries(array_keys($players));
-if (!$api->lastCallSucceeded()) {
-    $errors[] = "Failure getting player profiles. Aborting.";
-    goto fatalErrorResume;
-}
-
-foreach ($response as $player) {
-    $playerSteamID = $player['steamid'];
-
-    $players[$playerSteamID] = array(
-        'name' => $player['personaname'],
-        'avatarSmallURL' => $player['avatar'],
-        'avatarMediumURL' => $player['avatarmedium'],
-        //'online' => $player['personastate'] == 1 ? 'true' : 'false'
-    );
-}
-
-uasort($players, function($a, $b) {
-    $a['name'] = strtolower($a['name']);
-    $b['name'] = strtolower($b['name']);
-    if ($a['name'] === $b['name']) return 0;
-    return $a['name'] < $b['name'] ? -1 : 1;
-});
-
-//Add player status to each achievement
-foreach ($players as $id => $data) {
-    $name = $data['name'];
-    $response = $api->getPlayerAchievements($app, $id);
+/**
+ * Instantiate API, get achievement list, sort, and set up array with name and and global %
+ */
+function getPageData($app, $player_ids, &$errors) {
+    $api = new SteamAPIClient(API_KEY, $_GET);
+    $response = $api->getGameAchievements($app);
     if (!$api->lastCallSucceeded()) {
-        $errors[] = "Failure getting achievements for {$name}. Continuing to process.";
-        continue;
+        $errors[] = "Failure getting global achievement stats. Aborting.";
+        return;
     }
 
-    $playerAchievements = $response['playerstats']['achievements'];
+    $rawAchievements = $response['achievementpercentages']['achievements'];
+    usort($rawAchievements, function($a, $b) {
+        return strcasecmp($a['name'], $b['name']);
+    });
 
-    foreach ($playerAchievements as $achievement) {
-        $achData = &$achievements[$achievement['apiname']];
-        $achData[$achievement['achieved'] ? 'earned' : 'unearned'][] = (string) $id;
-
-        if (!isset($achData['name'])) $achData['name'] = $achievement['name'];
-        if (!isset($achData['description'])) $achData['description'] = $achievement['description'];
+    $achievements = array();
+    foreach ($rawAchievements as $achievement) {
+        $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
     }
 
-    usleep(100000);
+    //Get player names and info, then sort them by name
+    $response = $api->getPlayerProfileSummaries($player_ids);
+    if (!$api->lastCallSucceeded()) {
+        $errors[] = "Failure getting player profiles. Aborting.";
+        return;
+    }
+
+    $players = array();
+    foreach ($response as $player) {
+        $playerSteamID = $player['steamid'];
+
+        $players[$playerSteamID] = array(
+            'name' => $player['personaname'],
+            'avatarSmallURL' => $player['avatar'],
+            'avatarMediumURL' => $player['avatarmedium'],
+            //'online' => $player['personastate'] == 1 ? 'true' : 'false'
+        );
+    }
+
+    uasort($players, function($a, $b) {
+        $a['name'] = strtolower($a['name']);
+        $b['name'] = strtolower($b['name']);
+        if ($a['name'] === $b['name']) return 0;
+        return $a['name'] < $b['name'] ? -1 : 1;
+    });
+
+    //Add player status to each achievement
+    foreach ($players as $id => $data) {
+        $name = $data['name'];
+        $response = $api->getPlayerAchievements($app, $id);
+        if (!$api->lastCallSucceeded()) {
+            $errors[] = "Failure getting achievements for {$name}. Continuing to process.";
+            continue;
+        }
+
+        $playerAchievements = $response['playerstats']['achievements'];
+
+        foreach ($playerAchievements as $achievement) {
+            $achData = &$achievements[$achievement['apiname']];
+            $achData[$achievement['achieved'] ? 'earned' : 'unearned'][] = (string) $id;
+
+            if (!isset($achData['name'])) $achData['name'] = $achievement['name'];
+            if (!isset($achData['description'])) $achData['description'] = $achievement['description'];
+        }
+
+        usleep(100000);
+    }
+
+    return array($achievements, $players);
 }
 
-fatalErrorResume: //We pick up PHP processing here in case of fatal API error
 $phpEndTime = microtime(true);
 $phpExecutionTime = $phpEndTime - $phpStartTime;
 ?>
