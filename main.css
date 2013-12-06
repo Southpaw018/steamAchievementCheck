@@ -70,7 +70,7 @@ abbr[title] {
 
 .earnedUnearnedList li {
     float: left;
-    padding: 3px;
+    padding: 0;
     margin: 4px;
     border-width: 2px;
     border-style: solid;
@@ -78,7 +78,7 @@ abbr[title] {
     max-width: 64px;
 }
 
-.earnedUnearnedList.textNames li {
+.textNames li {
     border-style: none;
     float: none;
     margin: 0;
@@ -86,7 +86,7 @@ abbr[title] {
     max-width: 100%;
 }
 
-.earnedUnearnedList.textNames li img {
+.textNames li img {
     display: none;
 }
 
@@ -95,7 +95,7 @@ abbr[title] {
     display: none;
 }
 
-.earnedUnearnedList.textNames li p {
+.textNames li p {
      display: inline;
 }
 
@@ -103,6 +103,9 @@ abbr[title] {
 .earned {
     color: #00cc00;
     border-color: #00cc00;
+}
+.earned img {
+    opacity: 0.5;
 }
 .unearned {
     color: #000080;
