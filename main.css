@@ -50,6 +50,11 @@ abbr[title] {
     -webkit-column-count: 2;
     column-count: 2;
 }
+.playerFilter li {
+    max-width: 220px;
+    overflow: hidden;
+    white-space: nowrap;
+}
 .playerFilter li:first-child {
     font-style: italic;
 }
