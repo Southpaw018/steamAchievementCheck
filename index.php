@@ -117,10 +117,10 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
-        <script src="//mottie.github.io/tablesorter/js/jquery.tablesorter.js"></script>
-        <link rel="stylesheet" type="text/css" href="//mottie.github.io/tablesorter/css/theme.grey.css" />
+        <script src="jquery.tablesorter.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="theme.grey.css" />
 
-        <script src="//raw.github.com/Sjeiti/TinySort/master/src/jquery.tinysort.js"></script>
+        <script src="jquery.tinysort.js"></script>
 
         <script src="main.js"></script>
 
