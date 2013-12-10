@@ -64,6 +64,7 @@ class SteamAPIClient {
         }
 
         $this->lastCallSucceeded = false;
+        return false;
     }
 
     protected function getMulti($path, $steamidlist) {
@@ -92,10 +93,11 @@ class SteamAPIClient {
                 file_put_contents($cachePath, preg_replace('/([^\n])?$/', "$1\n", json_encode($cacheItem)));
             }
             $playerData = array_merge($cachedPlayerData, $result);
+            return $playerData;
         }
-        return $playerData;
 
         $this->lastCallSucceeded = false;
+        return false;
     }
 
     protected function useCache($path) {
