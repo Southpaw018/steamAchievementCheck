@@ -16,8 +16,9 @@ abbr[title] {
 }
 
 .main {
-    margin: auto;
-    width: 725px;
+    margin: auto 50px;
+    min-width: 500px;
+    max-width: 985px;
 }
 
 .flash {
@@ -35,7 +36,7 @@ abbr[title] {
 }
 
 .filters {
-    width: 495px;
+    width: 500px;
     margin: auto;
 }
 
@@ -48,6 +49,11 @@ abbr[title] {
     -moz-column-count: 2;
     -webkit-column-count: 2;
     column-count: 2;
+}
+.playerFilter li {
+    max-width: 220px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 .playerFilter li:first-child {
     font-style: italic;
@@ -64,13 +70,57 @@ abbr[title] {
     padding: 0.5em !important;
 }
 
-.mainTable td:first-child {width: 475px;}
+/*.mainTable td:first-child {width:  60%;}*/
 .mainTable td:first-child small {color: #bbbbbb;}
 
-.earned {color: #00cc00;}
-.unearned {color: #000080;}
+.earnedUnearnedList li {
+    float: left;
+    padding: 0;
+    margin: 4px;
+    border-width: 2px;
+    border-style: solid;
+    max-height: 64px;
+    max-width: 64px;
+}
 
-.mainTable td:last-child {text-align: right;}
+.textNames li {
+    border-style: none;
+    float: none;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+}
+
+.textNames li img {
+    display: none;
+}
+
+.earnedUnearnedList li p {
+    margin: 0;
+    display: none;
+}
+
+.textNames li p {
+     display: inline;
+}
+
+
+.earned {
+    color: #00cc00;
+    border-color: #00cc00;
+}
+.earned img {
+    opacity: 0.5;
+}
+.unearned {
+    color: #000080;
+    border-color: #000080;
+}
+
+.mainTable td:last-child {
+    text-align: right;
+    width: 70px;
+}
 
 [data-hidetest=true],
 [data-hideid=true],
@@ -97,3 +147,23 @@ abbr[title] {
     margin-right: 20px;
 }
 
+@media (max-width: 639px) {
+    .mainTable td:nth-of-type(2) {
+        width: 164px; /*two avatar photos across*/
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1084px) {
+    .mainTable td:nth-of-type(2) {
+        width: 246px; /*three avatar photos across*/
+    }
+}
+
+@media (min-width: 1085px) {
+    .main {
+        margin: auto;
+    }
+    .mainTable td:nth-of-type(2) {
+        width: 328px; /*four avatar photos across*/
+    }
+}

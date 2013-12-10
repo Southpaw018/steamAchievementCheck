@@ -27,12 +27,12 @@ $(document).ready(function() {
 
             if (this.earned) {
                 $.each(this.earned, function(index, id) {
-                    $list.append($('<li class="earned"></li>').append(document.createTextNode(players[id].name)).attr('data-id', id));
+                    $list.append($('<li class="earned"></li>').append(playerHTML(players[id])).attr('data-id', id));
                 });
             }
             if (this.unearned) {
                 $.each(this.unearned, function(index, id) {
-                    $list.append($('<li class="unearned"></li>').append(document.createTextNode(players[id].name)).attr('data-id', id));
+                    $list.append($('<li class="unearned"></li>').append(playerHTML(players[id])).attr('data-id', id));
                 });
             }
 
@@ -80,7 +80,8 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-    $('#filters input:not([id=hideTestAchievements])').prop('checked', true);
+    $('#filters fieldset:not([class=special]) input').prop('checked', true);
+    $('#filters fieldset[class=special] input').prop('checked', false);
     $('#hideTestAchievements').prop('checked', false);
 
     $('#toggleAllPlayers').change(function(evt) {
@@ -116,12 +117,21 @@ $(document).ready(function() {
         });
     });
 
+    $('#useTextNames').change(function(evt) {
+        $('.earnedUnearnedList').toggleClass('textNames', evt.currentTarget.checked);
+    });
+
     $('#hideTestAchievements').change(function(evt) {
         $('#mainTable tr.testAchievement').each(function() {
             $(this).attr('data-hidetest', evt.currentTarget.checked);
         });
     });
 });
+
+function playerHTML(player) {
+    return $('<img />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name)
+                .add($('<p></p>').append(document.createTextNode(player.name)));
+}
 
 function updateAllRowVisibility() {
     $('#mainTable tbody tr').each(function() {
