@@ -83,6 +83,7 @@ function getPageData($app, $player_ids, &$errors) {
         $response = $api->getPlayerAchievements($app, $id);
         if (!$api->lastCallSucceeded()) {
             $errors[] = "Failure getting achievements for {$name}. Continuing to process.";
+            unset($players[$id]);
             continue;
         }
 
