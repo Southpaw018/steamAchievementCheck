@@ -125,10 +125,15 @@ $(document).ready(function() {
             $(this).attr('data-hidetest', evt.currentTarget.checked);
         });
     });
+
+    $('#useCompactFormat').change(function(evt) {
+        $('.earnedUnearnedList').toggleClass('compact', evt.currentTarget.checked);
+    });
 });
 
 function playerHTML(player) {
-    return $('<img />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name)
+    return $('<img />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarMed')
+                .add($('<img />').attr('src', player.avatarSmallURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarSmall'))
                 .add($('<p></p>').append(document.createTextNode(player.name)));
 }
 
@@ -145,4 +150,3 @@ function updateRowVisibility($tr) {
         $tr.css('display', 'none');
     }
 }
-

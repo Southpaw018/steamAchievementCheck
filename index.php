@@ -170,6 +170,10 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                                 <label for="useTextNames">Use player names</label>
                             </li>
                             <li>
+                                <input type="checkbox" id="useCompactFormat" value="compactFormat">
+                                <label for="useCompactFormat">Use compact format</label>
+                            </li>
+                            <li>
                                 <input type="checkbox" value="hideTest" id="hideTestAchievements" />
                                 <label for="hideTestAchievements">Hide &lt;0.1% earned</label>
                             </li>
