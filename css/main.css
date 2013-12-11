@@ -167,3 +167,14 @@ abbr[title] {
         width: 328px; /*four avatar photos across*/
     }
 }
+
+/* tablesorter banded rows */
+.tablesorter-grey td {
+    background-color: inherit !important;
+}
+.tablesorter-grey tbody tr:nth-of-type(odd) {
+    background-color: #5e5e5e;
+}
+.tablesorter-grey tbody tr:nth-of-type(even) {
+    background-color: #6d6d6d;
+}

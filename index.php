@@ -83,6 +83,7 @@ function getPageData($app, $player_ids, &$errors) {
         $response = $api->getPlayerAchievements($app, $id);
         if (!$api->lastCallSucceeded()) {
             $errors[] = "Failure getting achievements for {$name}. Continuing to process.";
+            unset($players[$id]);
             continue;
         }
 
@@ -112,17 +113,17 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
         <title>Mumble Crew Steam Achievement Check</title>
         <meta charset="utf-8" />
 
-        <link rel="stylesheet" type="text/css" href="flash.css" />
-        <link rel="stylesheet" type="text/css" href="main.css" />
+        <link rel="stylesheet" type="text/css" href="css/flash.css" />
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
-        <script src="jquery.tablesorter.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="theme.grey.css" />
+        <script src="js/jquery.tablesorter.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/theme.grey.css" />
 
-        <script src="jquery.tinysort.js"></script>
+        <script src="js/jquery.tinysort.js"></script>
 
-        <script src="main.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+        <script src="js/main.js"></script>
 
         <script>
             var achievements = <?=json_encode($achievements);?>;

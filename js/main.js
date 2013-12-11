@@ -72,8 +72,7 @@ $(document).ready(function() {
         theme: 'grey',
         headerTemplate: '{content}{icon}',
         sortList: [[0, 0]],
-        headers: {1: {sorter: false}},
-        widgets: ['zebra']
+        headers: {1: {sorter: false}}
     });
 
     $mainTable.find('li').tsort();
