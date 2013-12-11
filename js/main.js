@@ -1,8 +1,5 @@
+//Handle errors
 $(document).ready(function() {
-    $('#close').click(function() {
-        $(this).parent().css('display', '');
-    });
-
     if (errors.length) {
         $errors = $('#flash ul');
         $.each(errors, function() {
@@ -10,7 +7,10 @@ $(document).ready(function() {
         });
         $('#flash').addClass('alert').css('display', 'block');
     }
+});
 
+//Build table DOM
+$(document).ready(function() {
     var $mainTable = $('#mainTable'),
         $tbody = $mainTable.find('tbody'),
         $nonTestAchvs;
@@ -67,6 +67,11 @@ $(document).ready(function() {
             $('#playerFilter label[for=' + id + ']').addClass('earned');
         }
     });
+});
+
+//Init sort plugins
+$(document).ready(function() {
+    var $mainTable = $('#mainTable');
 
     $mainTable.tablesorter({
         theme: 'grey',
@@ -78,10 +83,18 @@ $(document).ready(function() {
     $mainTable.find('li').tsort();
 });
 
+//Initial manipulation
 $(document).ready(function() {
     $('#filters fieldset:not([class=special]) input').prop('checked', true);
     $('#filters fieldset[class=special] input').prop('checked', false);
     $('#hideTestAchievements').prop('checked', false);
+});
+
+//Event hooks
+$(document).ready(function() {
+    $('#close').click(function() {
+        $(this).parent().css('display', '');
+    });
 
     $('#toggleAllPlayers').change(function(evt) {
         var checked = evt.currentTarget.checked;
@@ -131,6 +144,7 @@ $(document).ready(function() {
     });
 });
 
+//Utility functions
 function playerHTML(player) {
     return $('<img />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarMed')
                 .add($('<img />').attr('src', player.avatarSmallURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarSmall'))
