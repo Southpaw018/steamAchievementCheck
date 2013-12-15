@@ -40,7 +40,7 @@ abbr[title] {
     margin: auto;
 }
 
-.filters fieldset:first-of-type {
+.filters fieldset {
     margin-bottom: 5px;
 }
 
@@ -91,22 +91,22 @@ abbr[title] {
     display: none;
 }
 
-.earnedUnearnedList.compact {
+.mainTable.compact .earnedUnearnedList {
     height: 64px;
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
 }
 
-.earnedUnearnedList.compact .playerAvatarSmall {
+.mainTable.compact .earnedUnearnedList .playerAvatarSmall {
     display: list-item;
 }
 
-.earnedUnearnedList.compact .playerAvatarMed {
+.mainTable.compact .earnedUnearnedList .playerAvatarMed {
     display: none;
 }
 
-.textNames li {
+.mainTable.textNames .earnedUnearnedList li {
     display: block;
     border-style: none;
     float: none;
@@ -115,7 +115,7 @@ abbr[title] {
     max-width: 100%;
 }
 
-.textNames li img {
+.mainTable.textNames .earnedUnearnedList li img {
     display: none;
 }
 
@@ -124,7 +124,7 @@ abbr[title] {
     display: none;
 }
 
-.textNames li p {
+.mainTable.textNames .earnedUnearnedList li p {
      display: inline;
 }
 
@@ -159,15 +159,18 @@ li[data-hidetype=true] {
 }
 
 .achievements,
-.special {
+.tableFormat {
     margin-bottom: 1em;
-    width: 210px;
+    width: 215px;
 }
 .achievements {
     float: left;
 }
-.special {
+.tableFormat {
     float: right;
+}
+.special {
+    width: 162px;
 }
 
 .timeProfile {

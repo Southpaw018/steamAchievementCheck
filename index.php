@@ -162,17 +162,26 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                             </li>
                         </ul>
                     </fieldset>
+                    <fieldset class="tableFormat">
+                        <legend>Display options</legend>
+                        <ul>
+                            <li>
+                                <input type="radio" name="tableFormat" value="full" id="tableFormatFull" />
+                                <label for="tableFormatFull">Use full format</label>
+                            </li>
+                            <li>
+                                <input type="radio" name="tableFormat" value="textNames" id="tableFormatTextNames" />
+                                <label for="tableFormatTextNames">Use player names</label>
+                            </li>
+                            <li>
+                                <input type="radio" name="tableFormat" id="tableFormatCompact" value="compact">
+                                <label for="tableFormatCompact">Use compact format</label>
+                            </li>
+                        </ul>
+                    </fieldset>
                     <fieldset class="special">
                         <legend>Special</legend>
                         <ul>
-                            <li>
-                                <input type="checkbox" value="useTextNames" id="useTextNames" />
-                                <label for="useTextNames">Use player names</label>
-                            </li>
-                            <li>
-                                <input type="checkbox" id="useCompactFormat" value="compactFormat">
-                                <label for="useCompactFormat">Use compact format</label>
-                            </li>
                             <li>
                                 <input type="checkbox" value="hideTest" id="hideTestAchievements" />
                                 <label for="hideTestAchievements">Hide &lt;0.1% earned</label>

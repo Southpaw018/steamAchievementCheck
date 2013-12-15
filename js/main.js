@@ -85,8 +85,9 @@ $(document).ready(function() {
 
 //Initial manipulation
 $(document).ready(function() {
-    $('#filters fieldset:not([class=special]) input').prop('checked', true);
+    $('#filters fieldset:not([class=special],[class=tableFormat]) input').prop('checked', true);
     $('#filters fieldset[class=special] input').prop('checked', false);
+    $('#tableFormatFull').prop('checked', true);
     $('#hideTestAchievements').prop('checked', false);
 });
 
@@ -129,18 +130,15 @@ $(document).ready(function() {
         });
     });
 
-    $('#useTextNames').change(function(evt) {
-        $('.earnedUnearnedList').toggleClass('textNames', evt.currentTarget.checked);
-    });
-
     $('#hideTestAchievements').change(function(evt) {
         $('#mainTable tr.testAchievement').each(function() {
             $(this).attr('data-hidetest', evt.currentTarget.checked);
         });
     });
 
-    $('#useCompactFormat').change(function(evt) {
-        $('.earnedUnearnedList').toggleClass('compact', evt.currentTarget.checked);
+    $('.tableFormat input').change(function(evt) {
+        $('#mainTable').toggleClass('full textNames compact', false);
+        $('#mainTable').toggleClass(evt.currentTarget.value, true);
     });
 });
 
