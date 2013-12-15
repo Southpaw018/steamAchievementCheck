@@ -92,10 +92,14 @@ abbr[title] {
 }
 
 .mainTable.compact .earnedUnearnedList {
-    height: 64px;
+    max-height: 64px;
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
+}
+
+.mainTable.compact .earnedUnearnedList li {
+    margin-bottom: 0;
 }
 
 .mainTable.compact .earnedUnearnedList .playerAvatarSmall {
