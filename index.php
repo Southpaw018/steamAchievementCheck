@@ -25,6 +25,7 @@ $player_ids = array(
     '76561197996816207', //Master
     '76561197998922044', //Joe
     '76561197986608136', //Dagordae
+    '76561197995406735'  //Kation
 );
 
 $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
