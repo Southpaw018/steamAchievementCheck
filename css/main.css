@@ -40,6 +40,10 @@ abbr[title] {
     margin: auto;
 }
 
+.filters fieldset {
+    margin-bottom: 5px;
+}
+
 .clearDiv {
     clear: both;
 }
@@ -74,7 +78,7 @@ abbr[title] {
 .mainTable td:first-child small {color: #bbbbbb;}
 
 .earnedUnearnedList li {
-    float: left;
+    display: inline-block;
     padding: 0;
     margin: 4px;
     border-width: 2px;
@@ -83,7 +87,31 @@ abbr[title] {
     max-width: 64px;
 }
 
-.textNames li {
+.earnedUnearnedList .playerAvatarSmall {
+    display: none;
+}
+
+.mainTable.compact .earnedUnearnedList {
+    max-height: 64px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.mainTable.compact .earnedUnearnedList li {
+    margin-bottom: 0;
+}
+
+.mainTable.compact .earnedUnearnedList .playerAvatarSmall {
+    display: list-item;
+}
+
+.mainTable.compact .earnedUnearnedList .playerAvatarMed {
+    display: none;
+}
+
+.mainTable.textNames .earnedUnearnedList li {
+    display: block;
     border-style: none;
     float: none;
     margin: 0;
@@ -91,7 +119,7 @@ abbr[title] {
     max-width: 100%;
 }
 
-.textNames li img {
+.mainTable.textNames .earnedUnearnedList li img {
     display: none;
 }
 
@@ -100,7 +128,7 @@ abbr[title] {
     display: none;
 }
 
-.textNames li p {
+.mainTable.textNames .earnedUnearnedList li p {
      display: inline;
 }
 
@@ -128,16 +156,25 @@ abbr[title] {
     display: none;
 }
 
+li[data-hidetest=true],
+li[data-hideid=true],
+li[data-hidetype=true] {
+    display: none;
+}
+
 .achievements,
-.special {
+.tableFormat {
     margin-bottom: 1em;
-    width: 210px;
+    width: 215px;
 }
 .achievements {
     float: left;
 }
-.special {
+.tableFormat {
     float: right;
+}
+.special {
+    width: 162px;
 }
 
 .timeProfile {
@@ -149,13 +186,15 @@ abbr[title] {
 
 @media (max-width: 639px) {
     .mainTable td:nth-of-type(2) {
-        width: 164px; /*two avatar photos across*/
+        width: 164px; /*two large avatar photos across*/
+        max-width: 164px;
     }
 }
 
 @media (min-width: 640px) and (max-width: 1084px) {
     .mainTable td:nth-of-type(2) {
-        width: 246px; /*three avatar photos across*/
+        width: 246px; /*three large avatar photos across*/
+        max-width: 246px;
     }
 }
 
@@ -164,7 +203,8 @@ abbr[title] {
         margin: auto;
     }
     .mainTable td:nth-of-type(2) {
-        width: 328px; /*four avatar photos across*/
+        width: 328px; /*four large avatar photos across*/
+        max-width: 328px;
     }
 }
 

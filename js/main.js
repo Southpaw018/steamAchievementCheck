@@ -1,8 +1,5 @@
+//Handle errors
 $(document).ready(function() {
-    $('#close').click(function() {
-        $(this).parent().css('display', '');
-    });
-
     if (errors.length) {
         $errors = $('#flash ul');
         $.each(errors, function() {
@@ -10,7 +7,10 @@ $(document).ready(function() {
         });
         $('#flash').addClass('alert').css('display', 'block');
     }
+});
 
+//Build table DOM
+$(document).ready(function() {
     var $mainTable = $('#mainTable'),
         $tbody = $mainTable.find('tbody'),
         $nonTestAchvs;
@@ -67,6 +67,11 @@ $(document).ready(function() {
             $('#playerFilter label[for=' + id + ']').addClass('earned');
         }
     });
+});
+
+//Init sort plugins
+$(document).ready(function() {
+    var $mainTable = $('#mainTable');
 
     $mainTable.tablesorter({
         theme: 'grey',
@@ -78,10 +83,19 @@ $(document).ready(function() {
     $mainTable.find('li').tsort();
 });
 
+//Initial manipulation
 $(document).ready(function() {
-    $('#filters fieldset:not([class=special]) input').prop('checked', true);
+    $('#filters fieldset:not([class=special],[class=tableFormat]) input').prop('checked', true);
     $('#filters fieldset[class=special] input').prop('checked', false);
+    $('#tableFormatFull').prop('checked', true);
     $('#hideTestAchievements').prop('checked', false);
+});
+
+//Event hooks
+$(document).ready(function() {
+    $('#close').click(function() {
+        $(this).parent().css('display', '');
+    });
 
     $('#toggleAllPlayers').change(function(evt) {
         var checked = evt.currentTarget.checked;
@@ -116,19 +130,22 @@ $(document).ready(function() {
         });
     });
 
-    $('#useTextNames').change(function(evt) {
-        $('.earnedUnearnedList').toggleClass('textNames', evt.currentTarget.checked);
-    });
-
     $('#hideTestAchievements').change(function(evt) {
         $('#mainTable tr.testAchievement').each(function() {
             $(this).attr('data-hidetest', evt.currentTarget.checked);
         });
     });
+
+    $('.tableFormat input').change(function(evt) {
+        $('#mainTable').toggleClass('full textNames compact', false);
+        $('#mainTable').toggleClass(evt.currentTarget.value, true);
+    });
 });
 
+//Utility functions
 function playerHTML(player) {
-    return $('<img />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name)
+    return $('<img />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarMed')
+                .add($('<img />').attr('src', player.avatarSmallURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarSmall'))
                 .add($('<p></p>').append(document.createTextNode(player.name)));
 }
 
@@ -145,4 +162,3 @@ function updateRowVisibility($tr) {
         $tr.css('display', 'none');
     }
 }
-
