@@ -49,7 +49,11 @@ function getPageData($app, $player_ids, &$errors) {
 
     $achievements = array();
     foreach ($rawAchievements as $achievement) {
-        $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
+        $achievements[$achievement['name']] = array(
+            'percent' => $achievement['percent'],
+            'earned' => array(),
+            'unearned' => array(),
+        );
     }
 
     //Get player names and info, then sort them by name
@@ -77,29 +81,6 @@ function getPageData($app, $player_ids, &$errors) {
         if ($a['name'] === $b['name']) return 0;
         return $a['name'] < $b['name'] ? -1 : 1;
     });
-
-    //Add player status to each achievement
-    foreach ($players as $id => $data) {
-        $name = $data['name'];
-        $response = $api->getPlayerAchievements($app, $id);
-        if (!$api->lastCallSucceeded()) {
-            $errors[] = "Failure getting achievements for {$name}. Continuing to process.";
-            unset($players[$id]);
-            continue;
-        }
-
-        $playerAchievements = $response['playerstats']['achievements'];
-
-        foreach ($playerAchievements as $achievement) {
-            $achData = &$achievements[$achievement['apiname']];
-            $achData[$achievement['achieved'] ? 'earned' : 'unearned'][] = (string) $id;
-
-            if (!isset($achData['name'])) $achData['name'] = $achievement['name'];
-            if (!isset($achData['description'])) $achData['description'] = $achievement['description'];
-        }
-
-        usleep(100000);
-    }
 
     return array($achievements, $players);
 }
@@ -131,6 +112,7 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
             var players = <?=json_encode($players);?>;
             var errors = <?=json_encode($errors);?>;
             var phpExecutionTime = <?=$phpExecutionTime;?>;
+            var app = <?=$app;?>;
         </script>
     </head>
     <body>

@@ -9,8 +9,36 @@ $(document).ready(function() {
     }
 });
 
-//Build table DOM
 $(document).ready(function() {
+    var requestCount = 0,
+        responseCount = 0;
+    $.each(players, function(id) {
+        window.setTimeout(function() {
+            $.ajax('getPlayerData.php', {
+                data: {id: id, app: app},
+                dataType: 'json',
+                success: function(response) {
+                    $.each(response, function(index, data) {
+                        var achievement = achievements[data.apiname],
+                            type = achievement.achieved === 1 ? 'earned' : 'unearned';
+                        achievement[type].push(id);
+                        if (!achievement.name) {
+                            achievement.name = data.name;
+                        }
+                    });
+                },
+                complete: function() {
+                    if (++responseCount === requestCount) {
+                        buildTable();
+                    }
+                }
+            });
+        }, requestCount++ * 100);
+    });
+});
+
+//Build table DOM
+function buildTable() {
     var $mainTable = $('#mainTable'),
         $tbody = $mainTable.find('tbody'),
         $nonTestAchvs;
@@ -67,7 +95,7 @@ $(document).ready(function() {
             $('#playerFilter label[for=' + id + ']').addClass('earned');
         }
     });
-});
+}
 
 //Init sort plugins
 $(document).ready(function() {
