@@ -95,6 +95,8 @@ function buildTable() {
             $('#playerFilter label[for=' + id + ']').addClass('earned');
         }
     });
+
+    addExecutionTime();
 }
 
 //Init sort plugins
@@ -189,4 +191,8 @@ function updateRowVisibility($tr) {
     } else {
         $tr.css('display', 'none');
     }
+}
+
+function addExecutionTime() {
+    $('<li></li>').append('JavaScript time: ' + ((new Date().getTime() - javascriptStartTime) / 1000).toFixed(2) + ' seconds').appendTo($('.timeProfile'));
 }

@@ -184,12 +184,10 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                 <tbody></tbody>
             </table>
         </section>
-        <script>
-            var javascriptEndTime = new Date().getTime(),
-                javascriptExecutionTime = (javascriptEndTime - javascriptStartTime) / 1000,
-                totalExecutionTime = phpExecutionTime + javascriptExecutionTime;
-            $('<p class="timeProfile">This page generated in ' + totalExecutionTime.toFixed(2) + ' seconds. [PHP: ' + phpExecutionTime.toFixed(2) + 's; JS: ' + javascriptExecutionTime.toFixed(2) + 's]</p>').appendTo($('body'));
-        </script>
+
+        <ul class="timeProfile">
+            <li>PHP time: <?=round($phpExecutionTime, 2);?> seconds</li>
+        </ul>
     </body>
 </html>
 
