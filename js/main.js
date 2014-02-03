@@ -1,26 +1,25 @@
 //Handle errors
 $(document).ready(function() {
-    if (errors.length) {
-        $errors = $('#flash ul');
-        $.each(errors, function() {
-            $errors.append($('<li></li>').append(document.createTextNode(this)));
-        });
-        $('#flash').addClass('alert').css('display', 'block');
-    }
+    $.each(errors, function(index, error) {
+        addError(error);
+    });
 });
 
 $(document).ready(function() {
     var requestCount = 0,
         responseCount = 0,
-        progress = $('#playerDataProgress');
+        $progress = $('#playerDataProgress');
 
-    progress.attr('max', Object.keys(players).length);
+    $progress.attr('max', Object.keys(players).length);
 
     $.each(players, function(id) {
         window.setTimeout(function() {
             $.ajax('getPlayerData.php', {
                 data: {id: id, app: app},
                 dataType: 'json',
+                error: function(response) {
+                    addError('Could not load stats for ' + players[id].name);
+                },
                 success: function(response) {
                     $.each(response, function(index, data) {
                         var achievement = achievements[data.apiname],
@@ -35,9 +34,9 @@ $(document).ready(function() {
                 complete: function() {
                     if (++responseCount === requestCount) {
                         buildTable();
-                        progress.remove();
+                        $progress.remove();
                     } else {
-                        progress.attr('value', responseCount);
+                        $progress.attr('value', responseCount);
                     }
                 }
             });
@@ -204,3 +203,9 @@ function updateRowVisibility($tr) {
 function addExecutionTime() {
     $('<li></li>').append('JavaScript time: ' + ((new Date().getTime() - javascriptStartTime) / 1000).toFixed(2) + ' seconds').appendTo($('.timeProfile'));
 }
+
+function addError(error) {
+    $('#flash ul').append($('<li></li>').append(document.createTextNode(error)));
+    $('#flash').addClass('alert').css('display', 'block');
+}
+
