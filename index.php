@@ -91,22 +91,18 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <script>var javascriptStartTime = new Date().getTime();</script>
         <title>Mumble Crew Steam Achievement Check</title>
         <meta charset="utf-8" />
 
         <link rel="stylesheet" type="text/css" href="css/flash.css" />
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
-        <script src="js/jquery.tablesorter.min.js"></script>
         <link rel="stylesheet" type="text/css" href="css/theme.grey.css" />
-
-        <script src="js/jquery.tinysort.js"></script>
-
         <link rel="stylesheet" type="text/css" href="css/main.css" />
-        <script src="js/main.js"></script>
 
+        <script>var javascriptStartTime = new Date().getTime();</script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="js/jquery.tablesorter.min.js"></script>
+        <script src="js/jquery.tinysort.js"></script>
+        <script src="js/main.js"></script>
         <script>
             var achievements = <?=json_encode($achievements);?>;
             var players = <?=json_encode($players);?>;
