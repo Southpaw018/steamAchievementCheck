@@ -23,7 +23,7 @@ $(document).ready(function() {
                 success: function(response) {
                     $.each(response, function(index, data) {
                         var achievement = achievements[data.apiname],
-                            type = achievement.achieved === 1 ? 'earned' : 'unearned';
+                            type = data.achieved === 1 ? 'earned' : 'unearned';
                         achievement[type].push(id);
                         if (!achievement.name || !achievement.description) {
                             achievement.name = data.name;
