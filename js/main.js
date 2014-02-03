@@ -19,6 +19,7 @@ $(document).ready(function() {
                 dataType: 'json',
                 error: function(response) {
                     addError('Could not load stats for ' + players[id].name);
+                    delete players[id];
                 },
                 success: function(response) {
                     $.each(response, function(index, data) {
@@ -33,7 +34,7 @@ $(document).ready(function() {
                 },
                 complete: function() {
                     if (++responseCount === requestCount) {
-                        buildTable();
+                        buildDOM();
                         $progress.remove();
                     } else {
                         $progress.attr('value', responseCount);
@@ -44,8 +45,8 @@ $(document).ready(function() {
     });
 });
 
-//Build table DOM
-function buildTable() {
+//Build DOM
+function buildDOM() {
     var $mainTable = $('#mainTable'),
         $tbody = $mainTable.find('tbody'),
         $nonTestAchvs;
@@ -103,22 +104,39 @@ function buildTable() {
         }
     });
 
-    addExecutionTime();
-}
+    $('#playerFilter input:not([id=toggleAllPlayers])').change(function(evt) {
+        var hide = !evt.currentTarget.checked;
 
-//Init sort plugins
-$(document).ready(function() {
-    var $mainTable = $('#mainTable');
+        $('#toggleAllPlayers').prop('checked', !$('#playerFilter input:not(:checked):not([id=toggleAllPlayers])').length);
 
+        $('#mainTable .earnedUnearnedList li[data-id=' + evt.currentTarget.id + ']').each(function() {
+            var $this = $(this);
+            $this.attr('data-hideid', hide);
+        });
+
+        updateAllRowVisibility();
+    });
+
+    $('#earnedUnearnedFilter input').change(function(evt) {
+        var hide = !evt.currentTarget.checked;
+        $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value).each(function() {
+            var $this = $(this);
+            $this.attr('data-hidetype', hide);
+            updateRowVisibility($this.closest('tr'));
+        });
+    });
+
+    //Init sort plugins
     $mainTable.tablesorter({
         theme: 'grey',
         headerTemplate: '{content}{icon}',
         sortList: [[0, 0]],
         headers: {1: {sorter: false}}
     });
-
     $mainTable.find('li').tsort();
-});
+
+    addExecutionTime();
+}
 
 //Initial manipulation
 $(document).ready(function() {
@@ -143,28 +161,6 @@ $(document).ready(function() {
             $this.attr('data-hideid', !checked);
         });
         updateAllRowVisibility();
-    });
-
-    $('#playerFilter input:not([id=toggleAllPlayers])').change(function(evt) {
-        var hide = !evt.currentTarget.checked;
-
-        $('#toggleAllPlayers').prop('checked', !$('#playerFilter input:not(:checked):not([id=toggleAllPlayers])').length);
-
-        $('#mainTable .earnedUnearnedList li[data-id=' + evt.currentTarget.id + ']').each(function() {
-            var $this = $(this);
-            $this.attr('data-hideid', hide);
-        });
-
-        updateAllRowVisibility();
-    });
-
-    $('#earnedUnearnedFilter input').change(function(evt) {
-        var hide = !evt.currentTarget.checked;
-        $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value).each(function() {
-            var $this = $(this);
-            $this.attr('data-hidetype', hide);
-            updateRowVisibility($this.closest('tr'));
-        });
     });
 
     $('#hideTestAchievements').change(function(evt) {
