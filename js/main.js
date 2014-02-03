@@ -11,7 +11,11 @@ $(document).ready(function() {
 
 $(document).ready(function() {
     var requestCount = 0,
-        responseCount = 0;
+        responseCount = 0,
+        progress = $('#playerDataProgress');
+
+    progress.attr('max', Object.keys(players).length);
+
     $.each(players, function(id) {
         window.setTimeout(function() {
             $.ajax('getPlayerData.php', {
@@ -30,6 +34,9 @@ $(document).ready(function() {
                 complete: function() {
                     if (++responseCount === requestCount) {
                         buildTable();
+                        progress.remove();
+                    } else {
+                        progress.attr('value', responseCount);
                     }
                 }
             });

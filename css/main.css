@@ -63,6 +63,12 @@ abbr[title] {
     font-style: italic;
 }
 
+.progress {
+    display: block;
+    margin: auto;
+    width: 500px;
+}
+
 .mainTable {
     border-collapse: collapse;
     clear: both;

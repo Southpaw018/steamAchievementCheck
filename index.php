@@ -173,6 +173,7 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                     </fieldset>
                 </form>
             </div>
+            <progress id="playerDataProgress" class="progress"></progress>
             <table id="mainTable" class="mainTable">
                 <thead>
                     <tr>
