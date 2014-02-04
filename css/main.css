@@ -31,7 +31,7 @@ abbr[title] {
     border: 1px solid;
     text-align: center;
 }
-.flash.alert a.close:hover {
+.alert a.close:hover {
     background-color: #f4d7d8;
 }
 
@@ -69,9 +69,16 @@ abbr[title] {
     width: 500px;
 }
 
+table {
+    display: none;
+}
+
 .mainTable {
     border-collapse: collapse;
     clear: both;
+}
+.tablesorter {
+    display: table;
 }
 
 .mainTable th,
@@ -97,26 +104,26 @@ abbr[title] {
     display: none;
 }
 
-.mainTable.compact .earnedUnearnedList {
+.compact .earnedUnearnedList {
     max-height: 64px;
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
 }
 
-.mainTable.compact .earnedUnearnedList li {
+.compact .earnedUnearnedList li {
     margin-bottom: 0;
 }
 
-.mainTable.compact .earnedUnearnedList .playerAvatarSmall {
+.compact .earnedUnearnedList .playerAvatarSmall {
     display: list-item;
 }
 
-.mainTable.compact .earnedUnearnedList .playerAvatarMed {
+.compact .earnedUnearnedList .playerAvatarMed {
     display: none;
 }
 
-.mainTable.textNames .earnedUnearnedList li {
+.textNames .earnedUnearnedList li {
     display: block;
     border-style: none;
     float: none;
@@ -125,7 +132,7 @@ abbr[title] {
     max-width: 100%;
 }
 
-.mainTable.textNames .earnedUnearnedList li img {
+.textNames .earnedUnearnedList li img {
     display: none;
 }
 
@@ -134,7 +141,7 @@ abbr[title] {
     display: none;
 }
 
-.mainTable.textNames .earnedUnearnedList li p {
+.textNames .earnedUnearnedList li p {
      display: inline;
 }
 
