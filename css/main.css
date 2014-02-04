@@ -100,10 +100,6 @@ table {
     max-width: 64px;
 }
 
-.earnedUnearnedList .playerAvatarSmall {
-    display: none;
-}
-
 .compact .earnedUnearnedList {
     max-height: 64px;
     overflow-x: auto;
@@ -111,19 +107,17 @@ table {
     white-space: nowrap;
 }
 
-.compact .earnedUnearnedList li {
+.compact li {
     margin-bottom: 0;
 }
 
-.compact .earnedUnearnedList .playerAvatarSmall {
+.compact img {
     display: list-item;
+    width: 32px;
+    height: 32px;
 }
 
-.compact .earnedUnearnedList .playerAvatarMed {
-    display: none;
-}
-
-.textNames .earnedUnearnedList li {
+.textNames li {
     display: block;
     border-style: none;
     float: none;
@@ -132,7 +126,7 @@ table {
     max-width: 100%;
 }
 
-.textNames .earnedUnearnedList li img {
+.textNames img {
     display: none;
 }
 

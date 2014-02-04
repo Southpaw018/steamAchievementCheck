@@ -177,8 +177,7 @@ $(document).ready(function() {
 
 //Utility functions
 function playerHTML(player) {
-    return $('<img width="64" height="64" />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarMed')
-                .add($('<img width="32" height="32" />').attr('src', player.avatarSmallURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarSmall'))
+    return $('<img width="64" height="64" />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name)
                 .add($('<p></p>').append(document.createTextNode(player.name)));
 }
 
