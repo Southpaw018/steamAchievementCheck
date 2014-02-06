@@ -49,7 +49,11 @@ function getPageData($app, $player_ids, &$errors) {
 
     $achievements = array();
     foreach ($rawAchievements as $achievement) {
-        $achievements[$achievement['name']] = array('percent' => $achievement['percent']);
+        $achievements[$achievement['name']] = array(
+            'percent' => $achievement['percent'],
+            'earned' => array(),
+            'unearned' => array(),
+        );
     }
 
     //Get player names and info, then sort them by name
@@ -78,29 +82,6 @@ function getPageData($app, $player_ids, &$errors) {
         return $a['name'] < $b['name'] ? -1 : 1;
     });
 
-    //Add player status to each achievement
-    foreach ($players as $id => $data) {
-        $name = $data['name'];
-        $response = $api->getPlayerAchievements($app, $id);
-        if (!$api->lastCallSucceeded()) {
-            $errors[] = "Failure getting achievements for {$name}. Continuing to process.";
-            unset($players[$id]);
-            continue;
-        }
-
-        $playerAchievements = $response['playerstats']['achievements'];
-
-        foreach ($playerAchievements as $achievement) {
-            $achData = &$achievements[$achievement['apiname']];
-            $achData[$achievement['achieved'] ? 'earned' : 'unearned'][] = (string) $id;
-
-            if (!isset($achData['name'])) $achData['name'] = $achievement['name'];
-            if (!isset($achData['description'])) $achData['description'] = $achievement['description'];
-        }
-
-        usleep(100000);
-    }
-
     return array($achievements, $players);
 }
 
@@ -110,27 +91,24 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <script>var javascriptStartTime = new Date().getTime();</script>
         <title>Mumble Crew Steam Achievement Check</title>
         <meta charset="utf-8" />
 
         <link rel="stylesheet" type="text/css" href="css/flash.css" />
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
-        <script src="js/jquery.tablesorter.min.js"></script>
         <link rel="stylesheet" type="text/css" href="css/theme.grey.css" />
-
-        <script src="js/jquery.tinysort.js"></script>
-
         <link rel="stylesheet" type="text/css" href="css/main.css" />
-        <script src="js/main.js"></script>
 
+        <script>var javascriptStartTime = new Date().getTime();</script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="js/jquery.tablesorter.min.js"></script>
+        <script src="js/jquery.tinysort.js"></script>
+        <script src="js/main.js"></script>
         <script>
             var achievements = <?=json_encode($achievements);?>;
             var players = <?=json_encode($players);?>;
             var errors = <?=json_encode($errors);?>;
             var phpExecutionTime = <?=$phpExecutionTime;?>;
+            var app = <?=$app;?>;
         </script>
     </head>
     <body>
@@ -191,6 +169,7 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                     </fieldset>
                 </form>
             </div>
+            <progress id="playerDataProgress" class="progress"></progress>
             <table id="mainTable" class="mainTable">
                 <thead>
                     <tr>
@@ -202,12 +181,10 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                 <tbody></tbody>
             </table>
         </section>
-        <script>
-            var javascriptEndTime = new Date().getTime(),
-                javascriptExecutionTime = (javascriptEndTime - javascriptStartTime) / 1000,
-                totalExecutionTime = phpExecutionTime + javascriptExecutionTime;
-            $('<p class="timeProfile">This page generated in ' + totalExecutionTime.toFixed(2) + ' seconds. [PHP: ' + phpExecutionTime.toFixed(2) + 's; JS: ' + javascriptExecutionTime.toFixed(2) + 's]</p>').appendTo($('body'));
-        </script>
+
+        <ul class="timeProfile">
+            <li>PHP time: <?=round($phpExecutionTime, 2);?> seconds</li>
+        </ul>
     </body>
 </html>
 

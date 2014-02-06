@@ -1,16 +1,52 @@
 //Handle errors
 $(document).ready(function() {
-    if (errors.length) {
-        $errors = $('#flash ul');
-        $.each(errors, function() {
-            $errors.append($('<li></li>').append(document.createTextNode(this)));
-        });
-        $('#flash').addClass('alert').css('display', 'block');
-    }
+    $.each(errors, function(index, error) {
+        addError(error);
+    });
 });
 
-//Build table DOM
 $(document).ready(function() {
+    var requestCount = 0,
+        responseCount = 0,
+        $progress = $('#playerDataProgress');
+
+    $progress.attr('max', Object.keys(players).length);
+
+    $.each(players, function(id) {
+        window.setTimeout(function() {
+            $.ajax('getPlayerData.php', {
+                data: {id: id, app: app},
+                dataType: 'json',
+                error: function(response) {
+                    addError('Could not load stats for ' + players[id].name);
+                    delete players[id];
+                },
+                success: function(response) {
+                    $.each(response, function(index, data) {
+                        var achievement = achievements[data.apiname],
+                            type = data.achieved === 1 ? 'earned' : 'unearned';
+                        achievement[type].push(id);
+                        if (!achievement.name || !achievement.description) {
+                            achievement.name = data.name;
+                            achievement.description = data.description;
+                        }
+                    });
+                },
+                complete: function() {
+                    if (++responseCount === requestCount) {
+                        buildDOM();
+                        $progress.remove();
+                    } else {
+                        $progress.attr('value', responseCount);
+                    }
+                }
+            });
+        }, requestCount++ * 100);
+    });
+});
+
+//Build DOM
+function buildDOM() {
     var $mainTable = $('#mainTable'),
         $tbody = $mainTable.find('tbody'),
         $nonTestAchvs;
@@ -67,21 +103,40 @@ $(document).ready(function() {
             $('#playerFilter label[for=' + id + ']').addClass('earned');
         }
     });
-});
 
-//Init sort plugins
-$(document).ready(function() {
-    var $mainTable = $('#mainTable');
+    $('#playerFilter input:not([id=toggleAllPlayers])').change(function(evt) {
+        var hide = !evt.currentTarget.checked;
 
+        $('#toggleAllPlayers').prop('checked', !$('#playerFilter input:not(:checked):not([id=toggleAllPlayers])').length);
+
+        $('#mainTable .earnedUnearnedList li[data-id=' + evt.currentTarget.id + ']').each(function() {
+            var $this = $(this);
+            $this.attr('data-hideid', hide);
+        });
+
+        updateAllRowVisibility();
+    });
+
+    $('#earnedUnearnedFilter input').change(function(evt) {
+        var hide = !evt.currentTarget.checked;
+        $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value).each(function() {
+            var $this = $(this);
+            $this.attr('data-hidetype', hide);
+            updateRowVisibility($this.closest('tr'));
+        });
+    });
+
+    //Init sort plugins
     $mainTable.tablesorter({
         theme: 'grey',
         headerTemplate: '{content}{icon}',
         sortList: [[0, 0]],
         headers: {1: {sorter: false}}
     });
-
     $mainTable.find('li').tsort();
-});
+
+    addExecutionTime();
+}
 
 //Initial manipulation
 $(document).ready(function() {
@@ -108,28 +163,6 @@ $(document).ready(function() {
         updateAllRowVisibility();
     });
 
-    $('#playerFilter input:not([id=toggleAllPlayers])').change(function(evt) {
-        var hide = !evt.currentTarget.checked;
-
-        $('#toggleAllPlayers').prop('checked', !$('#playerFilter input:not(:checked):not([id=toggleAllPlayers])').length);
-
-        $('#mainTable .earnedUnearnedList li[data-id=' + evt.currentTarget.id + ']').each(function() {
-            var $this = $(this);
-            $this.attr('data-hideid', hide);
-        });
-
-        updateAllRowVisibility();
-    });
-
-    $('#earnedUnearnedFilter input').change(function(evt) {
-        var hide = !evt.currentTarget.checked;
-        $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value).each(function() {
-            var $this = $(this);
-            $this.attr('data-hidetype', hide);
-            updateRowVisibility($this.closest('tr'));
-        });
-    });
-
     $('#hideTestAchievements').change(function(evt) {
         $('#mainTable tr.testAchievement').each(function() {
             $(this).attr('data-hidetest', evt.currentTarget.checked);
@@ -144,8 +177,7 @@ $(document).ready(function() {
 
 //Utility functions
 function playerHTML(player) {
-    return $('<img />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarMed')
-                .add($('<img />').attr('src', player.avatarSmallURL).attr('alt', player.name).attr('title', player.name).attr('class', 'playerAvatarSmall'))
+    return $('<img width="64" height="64" />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name)
                 .add($('<p></p>').append(document.createTextNode(player.name)));
 }
 
@@ -162,3 +194,13 @@ function updateRowVisibility($tr) {
         $tr.css('display', 'none');
     }
 }
+
+function addExecutionTime() {
+    $('<li></li>').append('JavaScript time: ' + ((new Date().getTime() - javascriptStartTime) / 1000).toFixed(2) + ' seconds').appendTo($('.timeProfile'));
+}
+
+function addError(error) {
+    $('#flash ul').append($('<li></li>').append(document.createTextNode(error)));
+    $('#flash').addClass('alert').css('display', 'block');
+}
+
