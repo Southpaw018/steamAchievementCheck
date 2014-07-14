@@ -113,9 +113,6 @@ class SteamAPIClient {
     }
 
     protected function getCachePath($app, $steamid) {
-        if (!is_dir($this->cacheDir)) {
-            mkdir($this->cacheDir);
-        }
         return "{$this->cacheDir}/{$app}_{$steamid}.json";
     }
 
