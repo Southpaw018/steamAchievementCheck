@@ -15,7 +15,6 @@ $errors = array();
 $player_ids = array(
     '76561197993313145', //Glorax
     '76561197970314683', //Deagle
-    '76561197991652633', //Oten
     '76561198015208150', //Fargi
     '76561197966611402', //Moof
     '76561198006448879', //Scibs
@@ -27,6 +26,7 @@ $player_ids = array(
     '76561197986608136', //Dagordae
     '76561197995406735', //Kation
     '76561197992657083', //Lucas/Xraii
+    '76561197996775776', //Balthazar
 );
 
 $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
