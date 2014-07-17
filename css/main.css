@@ -1,8 +1,3 @@
-body {
-    background-color: #333333;
-    color: #eeeeee;
-    font-family: Arial, Helvetica, sans-serif;
-}
 p {margin-bottom: 0.5em;}
 
 ul {
@@ -11,14 +6,17 @@ ul {
     padding: 0;
 }
 
-abbr[title] {
-    border-bottom: 1px dashed silver;
+.hidden {
+    display: none;
+}
+.hidden-visibly {
+    top: 0;
+    left: 9999px;
+    position: absolute;
 }
 
 .main {
     margin: auto 50px;
-    min-width: 500px;
-    max-width: 985px;
 }
 
 .flash {
@@ -69,104 +67,90 @@ abbr[title] {
     width: 500px;
 }
 
-table {
-    display: none;
+.tablesorter {
+    display: table;
 }
 
 .mainTable {
     border-collapse: collapse;
     clear: both;
+    width: 100%;
 }
-.tablesorter {
-    display: table;
+.mainTable th {
+    font-size: smaller;
+    text-align: left;
+    white-space: nowrap;
 }
-
 .mainTable th,
 .mainTable td {
-    border: solid 1px black !important;
-    padding: 0.5em !important;
+    padding: 0.5em;
+}
+.mainTable th:first-child,
+.mainTable td:first-child {
+    width: 50%;
+}
+.mainTable th:last-child ,
+.mainTable td:last-child {
+    width: 4em;
+}
+.mainTable td:last-child {
+    text-align: right;
 }
 
-/*.mainTable td:first-child {width:  60%;}*/
-.mainTable td:first-child small {color: #bbbbbb;}
+.achievement-name {
+    display: block;
+}
+.achievement-desc {
+    font-size: smaller;
+}
 
 .earnedUnearnedList li {
-    display: inline-block;
+    cursor: pointer;
     padding: 0;
     margin: 4px;
+}
+.earnedUnearnedList .avatar:before {
     border-width: 2px;
     border-style: solid;
-    max-height: 64px;
-    max-width: 64px;
 }
-
-.compact .earnedUnearnedList {
-    max-height: 64px;
+.earnedUnearnedList {
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
 }
 
-.compact li {
-    margin-bottom: 0;
+.hideearned .earned,
+.hideunearned .unearned,
+.hideTest .testAchievement {
+    display: none;
 }
 
-.compact img {
-    display: list-item;
-    width: 32px;
+.player:before {
+    background-size: 16px;
+    content: '';
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    margin-right: 0.3em;
+}
+
+.avatarOnly li {
+    display: inline-block;
+}
+.avatarOnly .player:before {
+    background-size: 32px;
+    border-style: solid;
+    border-width: 2px;
+    display: inline-block;
     height: 32px;
+    width: 32px;
+    padding-right: 0;
 }
-
-.textNames li {
-    display: block;
-    border-style: none;
-    float: none;
-    margin: 0;
-    padding: 0;
-    max-width: 100%;
-}
-
-.textNames img {
+.avatarOnly .player * {
     display: none;
 }
-
-.earnedUnearnedList li p {
-    margin: 0;
-    display: none;
-}
-
-.textNames .earnedUnearnedList li p {
-     display: inline;
-}
-
-
-.earned {
-    color: #00cc00;
-    border-color: #00cc00;
-}
-.earned img {
+.avatarOnly .earned .player:before {
     opacity: 0.5;
-}
-.unearned {
-    color: #000080;
-    border-color: #000080;
-}
-
-.mainTable td:last-child {
-    text-align: right;
-    width: 70px;
-}
-
-[data-hidetest=true],
-[data-hideid=true],
-[data-hidetype=true] {
-    display: none;
-}
-
-li[data-hidetest=true],
-li[data-hideid=true],
-li[data-hidetype=true] {
-    display: none;
 }
 
 .achievements,
@@ -187,42 +171,5 @@ li[data-hidetype=true] {
 .timeProfile {
     text-align: right;
     font-style: italic;
-    color: #555555;
     margin-right: 20px;
 }
-
-@media (max-width: 639px) {
-    .mainTable td:nth-of-type(2) {
-        width: 164px; /*two large avatar photos across*/
-        max-width: 164px;
-    }
-}
-
-@media (min-width: 640px) and (max-width: 1084px) {
-    .mainTable td:nth-of-type(2) {
-        width: 246px; /*three large avatar photos across*/
-        max-width: 246px;
-    }
-}
-
-@media (min-width: 1085px) {
-    .main {
-        margin: auto;
-    }
-    .mainTable td:nth-of-type(2) {
-        width: 328px; /*four large avatar photos across*/
-        max-width: 328px;
-    }
-}
-
-/* tablesorter banded rows */
-.tablesorter-grey td {
-    background-color: inherit !important;
-}
-.tablesorter-grey tbody tr:nth-of-type(odd) {
-    background-color: #5e5e5e;
-}
-.tablesorter-grey tbody tr:nth-of-type(even) {
-    background-color: #6d6d6d;
-}
-
