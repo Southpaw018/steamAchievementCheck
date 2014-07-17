@@ -112,6 +112,7 @@ $(document).ready(function() {
             updateRowVisibility();
         } else {
             playerNodes[id] = [];
+            evt.currentTarget.disabled = 'disabled';
             $.ajax('getPlayerData.php' + window.location.search, {
                 data: {id: id, app: app},
                 dataType: 'json',
@@ -121,11 +122,16 @@ $(document).ready(function() {
                     delete(playerNodes[id]);
                 },
                 success: function(response) {
-                    var $mainTable = $('#mainTable');
+                    var $mainTable = $('#mainTable'),
+                        hide = {};
                     if ($mainTable.hasClass('hidden')) {
                         $mainTable.removeClass('hidden');
                         buildTable(response);
                     }
+
+                    $('#earnedUnearnedFilter input').each(function() {
+                        hide[this.value] = !this.checked;
+                    });
 
                     $.each(response, function() {
                         var $ul = $('#' + this.apiname),
@@ -135,6 +141,7 @@ $(document).ready(function() {
 
                         $li.addClass(className);
                         $li.attr('data-id', id);
+                        $li.attr('data-hidetype', hide[className]);
                         $li.append($('<span class="player-name"></span>').append(document.createTextNode(name)));
                         $ul.append($li);
 
@@ -143,6 +150,7 @@ $(document).ready(function() {
                     });
                 },
                 complete: function() {
+                    evt.currentTarget.removeAttribute('disabled');
                     playerQueue--;
                     updateRowVisibility();
                 }
