@@ -1,6 +1,7 @@
 var playerNodes = {},
     playerQueue = 0,
-    typeNodes = {earned: [], unearned: []};
+    typeNodes = {earned: [], unearned: []},
+    nocache = false; // TODO: Figure out $.trigger's extra parameters
 
 //Handle errors
 $(document).ready(function() {
@@ -99,25 +100,45 @@ $(document).ready(function() {
         window.open('http://steamcommunity.com/profiles/' + evt.currentTarget.getAttribute('data-id'), '_blank');
     });
 
-    $('#playerFilter input[data-name]').change(function(evt) {
-        var id = evt.currentTarget.id,
-            name = evt.currentTarget.getAttribute('data-name');
+    $('#playerFilter').on('click', '.loaded', null, function() {
+        var $this = $(this).removeClass('loaded'),
+            $checkbox = $this.siblings('input'),
+            id = $checkbox.attr('id');
+
+        $.each(playerNodes[id], function() {
+            $(this).remove();
+        });
+        delete(playerNodes[id]);
+
+        $checkbox.prop('checked', false);
+        nocache = true;
+        $checkbox.trigger('click');
+        nocache = false;
+    });
+
+    $('#playerFilter input[data-name]').on('click', function(evt) {
+        var id = this.id,
+            name = this.getAttribute('data-name');
 
         playerQueue++;
         if (playerNodes[id]) {
             playerQueue--;
             $.each(playerNodes[id], function () {
-                this.setAttribute('data-hideid', !evt.currentTarget.checked);
+                this.setAttribute('data-hideid', !this.checked);
             });
             updateRowVisibility();
         } else {
+            var $checkbox = $(this).prop('disabled', true),
+                $status = $checkbox.siblings('.status');
+            $status.addClass('loading');
             playerNodes[id] = [];
-            evt.currentTarget.disabled = 'disabled';
-            $.ajax('getPlayerData.php' + window.location.search, {
+
+            $.ajax('getPlayerData.php' + (nocache ? '?nocache=1' : window.location.search), {
                 data: {id: id, app: app},
                 dataType: 'json',
                 error: function(response) {
                     $('#' + id).prop('checked', false);
+                    $status.removeClass('loading');
                     addError('Could not load stats for ' + name);
                     delete(playerNodes[id]);
                 },
@@ -148,9 +169,12 @@ $(document).ready(function() {
                         playerNodes[id].push(li);
                         typeNodes[className].push(li);
                     });
+
+                    $status.removeClass('loading');
+                    $status.addClass('loaded');
                 },
                 complete: function() {
-                    evt.currentTarget.removeAttribute('disabled');
+                    $checkbox.prop('disabled', false);
                     playerQueue--;
                     updateRowVisibility();
                 }

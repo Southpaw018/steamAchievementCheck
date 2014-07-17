@@ -131,6 +131,7 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                             </li>
                             <?php foreach ($players as $id => $player): ?>
                                 <li>
+                                    <span class="status"></span>
                                     <input type="checkbox" id="<?= $id; ?>" data-name="<?= $player['personaname']; ?>" />
                                     <label for="<?= $id; ?>"><span class="player p<?= $id; ?>"><?= htmlspecialchars($player['personaname']); ?></span></label>
                                 </li>
