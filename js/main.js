@@ -1,5 +1,6 @@
-var playersLoaded = {},
-    playerQueue = 0;
+var playerNodes = {},
+    playerQueue = 0,
+    typeNodes = {earned: [], unearned: []};
 
 //Handle errors
 $(document).ready(function() {
@@ -47,7 +48,9 @@ function buildTable(playerData) {
     $('#earnedUnearnedFilter input').change(function(evt) {
         var hide = !evt.currentTarget.checked;
         var type = evt.currentTarget.value;
-        $('#mainTable').toggleClass('hide' + evt.currentTarget.value, hide);
+        $.each(typeNodes[type], function () {
+            this.setAttribute('data-hidetype', hide);
+        });
         updateRowVisibility();
     });
 
@@ -101,20 +104,21 @@ $(document).ready(function() {
             name = evt.currentTarget.getAttribute('data-name');
 
         playerQueue++;
-        $('#mainTable').toggleClass('hide' + id, !evt.currentTarget.checked);
-
-        if (playersLoaded[id]) {
+        if (playerNodes[id]) {
             playerQueue--;
+            $.each(playerNodes[id], function () {
+                this.setAttribute('data-hideid', !evt.currentTarget.checked);
+            });
             updateRowVisibility();
         } else {
-            playersLoaded[id] = true;
+            playerNodes[id] = [];
             $.ajax('getPlayerData.php' + window.location.search, {
                 data: {id: id, app: app},
                 dataType: 'json',
                 error: function(response) {
                     $('#' + id).prop('checked', false);
                     addError('Could not load stats for ' + name);
-                    delete(playersLoaded[id]);
+                    delete(playerNodes[id]);
                 },
                 success: function(response) {
                     var $mainTable = $('#mainTable');
@@ -125,12 +129,17 @@ $(document).ready(function() {
 
                     $.each(response, function() {
                         var $ul = $('#' + this.apiname),
-                            $li = $('<li class="player p' + id + '"></li>');
+                            $li = $('<li class="player p' + id + '"></li>'),
+                            li = $li.get(0),
+                            className = this.achieved === 1 ? 'earned' : 'unearned';
 
-                        $li.addClass(this.achieved === 1 ? 'earned' : 'unearned');
+                        $li.addClass(className);
                         $li.attr('data-id', id);
                         $li.append($('<span class="player-name"></span>').append(document.createTextNode(name)));
                         $ul.append($li);
+
+                        playerNodes[id].push(li);
+                        typeNodes[className].push(li);
                     });
                 },
                 complete: function() {
@@ -143,22 +152,18 @@ $(document).ready(function() {
 });
 
 //Utility functions
-function playerHTML(player) {
-    return $('<img width="32" height="32" />')
-            .attr('src', player.avatar)
-            .attr('alt', player.personaname)
-            .attr('title', player.personaname)
-        .add($('<span></span>').append(document.createTextNode(player.personaname)));
-}
-
 function updateRowVisibility() {
     if (playerQueue) {
         return;
     }
 
-    $('#mainTable tbody tr').each(function() {
+    var selector = '#mainTable tbody tr';
+    if ($('#hideTestAchievements').prop('checked')) {
+        selector += ':not(".testAchievement")';
+    }
+    $(selector).each(function() {
         $tr = $(this);
-        $tr.toggleClass('hidden-visibly', !$tr.find('.earnedUnearnedList').children(':visible').length);
+        $tr.toggleClass('hidden', !$tr.find('.earnedUnearnedList').children('[data-hideid!=true][data-hidetype!=true]').length);
     });
 }
 

@@ -100,7 +100,6 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
         <style type="text/css">
         <?php foreach ($players as $id => $player): ?>
             .p<?= $id; ?>:before {background-image: url('<?= $player['avatar']; ?>');}
-            .hide<?= $id; ?> [data-id='<?= $id; ?>'] {display: none;}
         <?php endforeach; ?>
         </style>
 

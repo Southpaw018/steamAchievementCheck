@@ -6,13 +6,10 @@ ul {
     padding: 0;
 }
 
-.hidden {
-    display: none;
-}
-.hidden-visibly {
-    top: 0;
-    left: 9999px;
-    position: absolute;
+.hidden,
+[data-hideid='true'],
+[data-hidetype='true'] {
+    display: none !important;
 }
 
 .main {
