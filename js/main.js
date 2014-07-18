@@ -8,15 +8,19 @@ var $mainTable,
     nocache = false; // TODO: Figure out $.trigger's extra parameters
 
 $(document).ready(function() {
-    // Initialization
+    // Initialize
     $mainTable = $('#mainTable');
     $playerCheckboxes = $('#playerFilter input[data-name]');
     $toggleAllPlayers = $('#toggleAllPlayers');
 
-    // Handle errors
-    $.each(errors, function(index, error) {
-        addError(error);
+    // Render error messages
+    $.each(window.data.errors, function() {
+        addError(this);
     });
+
+    // Reset checkboxes
+    $('#filters input').prop('checked', false);
+    $('#earnedUnearnedFilter input').prop('checked', true);
 });
 
 function buildTable(playerData) {
@@ -27,14 +31,14 @@ function buildTable(playerData) {
         metadata[this.apiname] = {name: this.name, description: this.description};
     });
 
-    $.each(achievements, function(id, percent) {
+    $.each(window.data.achievements, function(id, percent) {
         if (!metadata[id]) {
             return true;
         }
 
         var $tr = $('<tr></tr>');
 
-        if (percent < 0.1) {
+        if (percent < window.data.testThreshold) {
             $tr.addClass('testAchievement');
         }
 
@@ -75,12 +79,6 @@ function buildTable(playerData) {
 
     $mainTable.removeClass('hidden');
 }
-
-//Initial manipulation
-$(document).ready(function() {
-    $('#filters input').prop('checked', false);
-    $('#earnedUnearnedFilter input').prop('checked', true);
-});
 
 //Event hooks
 $(document).ready(function() {
@@ -147,7 +145,7 @@ $(document).ready(function() {
             playerNodes[id] = [];
 
             $.ajax('getPlayerData.php' + (nocache ? '?nocache=1' : window.location.search), {
-                data: {id: id, app: app},
+                data: {id: id, app: window.data.app},
                 dataType: 'json',
                 error: function(response) {
                     $('#' + id).prop('checked', false);

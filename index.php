@@ -4,6 +4,9 @@ $phpStartTime = microtime(true);
 require('apiKey.php');
 require('SteamAPIClient.php');
 
+//Config
+define("TEST_THRESHOLD", 0.1);
+
 //Games we play a lot
 define("KILLING_FLOOR", 1250);
 define("PAYDAY", 24240);
@@ -84,8 +87,7 @@ function getPlayerData($api, $ids, &$errors) {
     return $players;
 }
 
-$phpEndTime = microtime(true);
-$phpExecutionTime = $phpEndTime - $phpStartTime;
+$phpExecutionTime = microtime(true) - $phpStartTime;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,10 +110,12 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
         <script src="js/jquery.tinysort.js"></script>
         <script src="js/main.js"></script>
         <script>
-            var achievements = <?= json_encode($achievements); ?>;
-            var errors = <?= json_encode($errors); ?>;
-            var phpExecutionTime = <?= $phpExecutionTime; ?>;
-            var app = <?= $app; ?>;
+            window.data = {
+                achievements: <?= json_encode($achievements); ?>,
+                errors: <?= json_encode($errors); ?>,
+                app: <?= json_encode($app); ?>,
+                testThreshold: <?= json_encode(TEST_THRESHOLD); ?>
+            };
         </script>
     </head>
     <body>
@@ -126,7 +130,7 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                         <legend>Show players</legend>
                         <ul id="playerFilter" class="playerFilter">
                             <li>
-                                <input type="checkbox" id="toggleAllPlayers" checked />
+                                <input type="checkbox" id="toggleAllPlayers" />
                                 <label for="toggleAllPlayers">All</label>
                             </li>
                             <?php foreach ($players as $id => $player): ?>
