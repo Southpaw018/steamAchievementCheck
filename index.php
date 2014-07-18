@@ -183,8 +183,6 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
             </table>
         </section>
 
-        <ul class="timeProfile">
-            <li>PHP time: <?=round($phpExecutionTime, 2);?> seconds</li>
-        </ul>
+        <div class="timeProfile">PHP time: <?= round($phpExecutionTime, 2); ?> seconds</div>
     </body>
 </html>

@@ -1,5 +1,6 @@
 var $mainTable,
     $playerCheckboxes,
+    $toggleAllPlayers,
     hideType = {},
     playerNodes = {},
     playerQueue = 0,
@@ -10,6 +11,7 @@ $(document).ready(function() {
     // Initialization
     $mainTable = $('#mainTable');
     $playerCheckboxes = $('#playerFilter input[data-name]');
+    $toggleAllPlayers = $('#toggleAllPlayers');
 
     // Handle errors
     $.each(errors, function(index, error) {
@@ -52,9 +54,9 @@ function buildTable(playerData) {
         $tbody.append($tr);
     });
 
-    $('#earnedUnearnedFilter input').change(function(evt) {
-        var hide = !evt.currentTarget.checked,
-            type = evt.currentTarget.value;
+    $('#earnedUnearnedFilter input').change(function() {
+        var hide = !this.checked,
+            type = this.value;
         hideType[type] = hide;
         $.each(typeNodes[type], function() {
             this.setAttribute('data-hidetype', hide);
@@ -86,8 +88,8 @@ $(document).ready(function() {
         $(this).parent().css('display', '');
     });
 
-    $('#toggleAllPlayers').click(function(evt) {
-        var checked = evt.currentTarget.checked;
+    $toggleAllPlayers.click(function() {
+        var checked = this.checked;
         $playerCheckboxes.each(function() {
             if (this.checked !== checked) {
                 $(this).trigger('click');
@@ -95,16 +97,16 @@ $(document).ready(function() {
         });
     });
 
-    $('#hideTestAchievements').change(function(evt) {
-        $mainTable.toggleClass('hideTest', evt.currentTarget.checked);
+    $('#hideTestAchievements').change(function() {
+        $mainTable.toggleClass('hideTest', this.checked);
     });
 
-    $('#toggleNames').change(function(evt) {
-        $mainTable.toggleClass('avatarOnly', !evt.currentTarget.checked);
+    $('#toggleNames').change(function() {
+        $mainTable.toggleClass('avatarOnly', !this.checked);
     });
 
-    $mainTable.on('click', 'li', null, function(evt) {
-        window.open('http://steamcommunity.com/profiles/' + evt.currentTarget.getAttribute('data-id'), '_blank');
+    $mainTable.on('click', 'li', null, function() {
+        window.open('http://steamcommunity.com/profiles/' + this.getAttribute('data-id'), '_blank');
     });
 
     $('#playerFilter').on('click', '.loaded', null, function() {
@@ -118,20 +120,24 @@ $(document).ready(function() {
         delete(playerNodes[id]);
 
         $checkbox.prop('checked', false);
+        $toggleAllPlayers.prop('checked', false);
         nocache = true;
         $checkbox.trigger('click');
         nocache = false;
     });
 
-    $playerCheckboxes.on('click', function(evt) {
+    $playerCheckboxes.on('click', function() {
         var id = this.id,
-            name = this.getAttribute('data-name');
+            name = this.getAttribute('data-name'),
+            checked = this.checked;
 
+        $toggleAllPlayers.prop('checked', checked && !$playerCheckboxes.filter(':not(:checked)').length);
         playerQueue++;
+
         if (playerNodes[id]) {
             playerQueue--;
             $.each(playerNodes[id], function() {
-                this.setAttribute('data-hideid', !evt.currentTarget.checked);
+                this.setAttribute('data-hideid', !checked);
             });
             updateRowVisibility();
         } else {
@@ -145,6 +151,7 @@ $(document).ready(function() {
                 dataType: 'json',
                 error: function(response) {
                     $('#' + id).prop('checked', false);
+                    $toggleAllPlayers.prop('checked', false);
                     $status.removeClass('loading');
                     addError('Could not load stats for ' + name);
                     delete(playerNodes[id]);

@@ -177,7 +177,8 @@ ul {
 }
 
 .timeProfile {
-    text-align: right;
     font-style: italic;
-    margin-right: 20px;
+    margin-right: 1em;
+    margin-top: 1em;
+    text-align: right;
 }
