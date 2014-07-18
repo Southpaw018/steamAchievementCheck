@@ -1,18 +1,24 @@
-var playerNodes = {},
+var $mainTable,
+    $playerCheckboxes,
+    hideType = {},
+    playerNodes = {},
     playerQueue = 0,
     typeNodes = {earned: [], unearned: []},
     nocache = false; // TODO: Figure out $.trigger's extra parameters
 
-//Handle errors
 $(document).ready(function() {
+    // Initialization
+    $mainTable = $('#mainTable');
+    $playerCheckboxes = $('#playerFilter input[data-name]');
+
+    // Handle errors
     $.each(errors, function(index, error) {
         addError(error);
     });
 });
 
 function buildTable(playerData) {
-    var $mainTable = $('#mainTable'),
-        $tbody = $mainTable.find('tbody'),
+    var $tbody = $mainTable.find('tbody'),
         metadata = {};
 
     $.each(playerData, function(id) {
@@ -47,9 +53,10 @@ function buildTable(playerData) {
     });
 
     $('#earnedUnearnedFilter input').change(function(evt) {
-        var hide = !evt.currentTarget.checked;
-        var type = evt.currentTarget.value;
-        $.each(typeNodes[type], function () {
+        var hide = !evt.currentTarget.checked,
+            type = evt.currentTarget.value;
+        hideType[type] = hide;
+        $.each(typeNodes[type], function() {
             this.setAttribute('data-hidetype', hide);
         });
         updateRowVisibility();
@@ -81,7 +88,7 @@ $(document).ready(function() {
 
     $('#toggleAllPlayers').click(function(evt) {
         var checked = evt.currentTarget.checked;
-        $('#playerFilter input[data-name]').each(function() {
+        $playerCheckboxes.each(function() {
             if (this.checked !== checked) {
                 $(this).trigger('click');
             }
@@ -89,14 +96,14 @@ $(document).ready(function() {
     });
 
     $('#hideTestAchievements').change(function(evt) {
-        $('#mainTable').toggleClass('hideTest', evt.currentTarget.checked);
+        $mainTable.toggleClass('hideTest', evt.currentTarget.checked);
     });
 
     $('#toggleNames').change(function(evt) {
-        $('#mainTable').toggleClass('avatarOnly', !evt.currentTarget.checked);
+        $mainTable.toggleClass('avatarOnly', !evt.currentTarget.checked);
     });
 
-    $('#mainTable').on('click', 'li', null, function(evt) {
+    $mainTable.on('click', 'li', null, function(evt) {
         window.open('http://steamcommunity.com/profiles/' + evt.currentTarget.getAttribute('data-id'), '_blank');
     });
 
@@ -116,15 +123,15 @@ $(document).ready(function() {
         nocache = false;
     });
 
-    $('#playerFilter input[data-name]').on('click', function(evt) {
+    $playerCheckboxes.on('click', function(evt) {
         var id = this.id,
             name = this.getAttribute('data-name');
 
         playerQueue++;
         if (playerNodes[id]) {
             playerQueue--;
-            $.each(playerNodes[id], function () {
-                this.setAttribute('data-hideid', !this.checked);
+            $.each(playerNodes[id], function() {
+                this.setAttribute('data-hideid', !evt.currentTarget.checked);
             });
             updateRowVisibility();
         } else {
@@ -143,31 +150,24 @@ $(document).ready(function() {
                     delete(playerNodes[id]);
                 },
                 success: function(response) {
-                    var $mainTable = $('#mainTable'),
-                        hide = {};
                     if ($mainTable.hasClass('hidden')) {
                         $mainTable.removeClass('hidden');
                         buildTable(response);
                     }
 
-                    $('#earnedUnearnedFilter input').each(function() {
-                        hide[this.value] = !this.checked;
-                    });
-
                     $.each(response, function() {
                         var $ul = $('#' + this.apiname),
-                            $li = $('<li class="player p' + id + '"></li>'),
-                            li = $li.get(0),
-                            className = this.achieved === 1 ? 'earned' : 'unearned';
+                            li = document.createElement('li'),
+                            type = this.achieved === 1 ? 'earned' : 'unearned';
 
-                        $li.addClass(className);
-                        $li.attr('data-id', id);
-                        $li.attr('data-hidetype', hide[className]);
-                        $li.append($('<span class="player-name"></span>').append(document.createTextNode(name)));
-                        $ul.append($li);
+                        li.className = 'player p' + id + ' ' + type;
+                        li.setAttribute('data-id', id);
+                        li.setAttribute('data-hidetype', hideType[type]);
+                        li.appendChild($('<span class="player-name"></span>').append(document.createTextNode(name)).get(0));
+                        $ul.append(li);
 
                         playerNodes[id].push(li);
-                        typeNodes[className].push(li);
+                        typeNodes[type].push(li);
                     });
 
                     $status.removeClass('loading');
@@ -189,11 +189,11 @@ function updateRowVisibility() {
         return;
     }
 
-    var selector = '#mainTable tbody tr';
+    var selector = 'tbody tr';
     if ($('#hideTestAchievements').prop('checked')) {
         selector += ':not(".testAchievement")';
     }
-    $(selector).each(function() {
+    $mainTable.find(selector).each(function() {
         $tr = $(this);
         $tr.toggleClass('hidden', !$tr.find('.earnedUnearnedList').children('[data-hideid!=true][data-hidetype!=true]').length);
     });

@@ -157,7 +157,7 @@ ul {
 .avatarOnly .player * {
     display: none;
 }
-.avatarOnly .earned .player:before {
+.avatarOnly .earned.player:before {
     opacity: 0.5;
 }
 
