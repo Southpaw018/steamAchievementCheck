@@ -1,4 +1,4 @@
-Steam ID lookup service: http://steamid.co/
+#Steam ID lookup service: http://steamid.co/
 
 76561197993313145 Glorax
 76561197970314683 Deagle
@@ -14,11 +14,13 @@ Steam ID lookup service: http://steamid.co/
 76561197995406735 Kation
 76561197992657083 Xraii/Lucas
 
-Balthazar & co.
+==Balthazar & co.
 76561197996775776 Balthazar
-76561198008113432 Bean
+76561198008113432 Duke/Bean
+;76561198009366230 Darkhalen
+76561197985532180 Mave
 
-bmbb & co.
+==bmbb & co.
 76561197974043151 bmbb/Brandon
 76561197969547636 Rue/Teal
 76561198015037402 Terrorler/Tyler

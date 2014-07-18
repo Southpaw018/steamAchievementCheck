@@ -23,7 +23,7 @@ function getPlayerIDs() {
     $lines = file('playerIDs.txt');
     $ids = array();
     foreach ($lines as $line) {
-        if (preg_match('/(?<!\d)(\d{17})(?!\d)/', $line, $matches)) {
+        if (preg_match('/^\s*(?![#;=]).*(?<!\d)(\d{17})(?!\d)/', $line, $matches)) {
             $ids[] = $matches[0];
         }
     }
