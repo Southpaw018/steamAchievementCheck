@@ -158,14 +158,9 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                                 <input type="checkbox" id="toggleNames">
                                 <label for="toggleNames">Show player names</label>
                             </li>
-                        </ul>
-                    </fieldset>
-                    <fieldset class="special">
-                        <legend>Special</legend>
-                        <ul>
                             <li>
                                 <input type="checkbox" value="hideTest" id="hideTestAchievements" />
-                                <label for="hideTestAchievements">Hide &lt;0.1% earned</label>
+                                <label for="hideTestAchievements">Hide &lt;<?= TEST_THRESHOLD; ?>% earned</label>
                             </li>
                         </ul>
                     </fieldset>
