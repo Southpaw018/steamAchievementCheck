@@ -7,14 +7,14 @@ var $mainTable,
     typeNodes = {earned: [], unearned: []},
     nocache = false; // TODO: Figure out $.trigger's extra parameters
 
-$(document).ready(function() {
+$(document).ready(function () {
     // Initialize
     $mainTable = $('#mainTable');
     $playerCheckboxes = $('#playerFilter input[data-name]');
     $toggleAllPlayers = $('#toggleAllPlayers');
 
     // Render error messages
-    $.each(window.data.errors, function() {
+    $.each(window.data.errors, function () {
         addError(this);
     });
 
@@ -27,11 +27,11 @@ function buildTable(playerData) {
     var $tbody = $mainTable.find('tbody'),
         metadata = {};
 
-    $.each(playerData, function(id) {
+    $.each(playerData, function () {
         metadata[this.apiname] = {name: this.name, description: this.description};
     });
 
-    $.each(window.data.achievements, function(id, percent) {
+    $.each(window.data.achievements, function (id, percent) {
         if (!metadata[id]) {
             return true;
         }
@@ -53,16 +53,17 @@ function buildTable(playerData) {
         $tr.append($('<td></td>')
             .append($('<abbr></abbr>').attr('title', percent + '%')
                 .append(percent.toFixed(2) + '%')
-        ));
+            )
+        );
 
         $tbody.append($tr);
     });
 
-    $('#earnedUnearnedFilter input').change(function() {
+    $('#earnedUnearnedFilter input').change(function () {
         var hide = !this.checked,
             type = this.value;
         hideType[type] = hide;
-        $.each(typeNodes[type], function() {
+        $.each(typeNodes[type], function () {
             this.setAttribute('data-hidetype', hide);
         });
         updateRowVisibility();
@@ -81,41 +82,41 @@ function buildTable(playerData) {
 }
 
 //Event hooks
-$(document).ready(function() {
-    $('#close').click(function() {
+$(document).ready(function () {
+    $('#close').click(function () {
         $(this).parent().css('display', '');
     });
 
-    $toggleAllPlayers.click(function() {
+    $toggleAllPlayers.click(function () {
         var checked = this.checked;
-        $playerCheckboxes.each(function() {
+        $playerCheckboxes.each(function () {
             if (this.checked !== checked) {
                 $(this).trigger('click');
             }
         });
     });
 
-    $('#hideTestAchievements').change(function() {
+    $('#hideTestAchievements').change(function () {
         $mainTable.toggleClass('hideTest', this.checked);
     });
 
-    $('#toggleNames').change(function() {
+    $('#toggleNames').change(function () {
         $mainTable.toggleClass('avatarOnly', !this.checked);
     });
 
-    $mainTable.on('click', 'li', null, function() {
+    $mainTable.on('click', 'li', null, function () {
         window.open('http://steamcommunity.com/profiles/' + this.getAttribute('data-id'), '_blank');
     });
 
-    $('#playerFilter').on('click', '.loaded', null, function() {
+    $('#playerFilter').on('click', '.loaded', null, function () {
         var $this = $(this).removeClass('loaded'),
             $checkbox = $this.siblings('input'),
             id = $checkbox.attr('id');
 
-        $.each(playerNodes[id], function() {
+        $.each(playerNodes[id], function () {
             $(this).remove();
         });
-        delete(playerNodes[id]);
+        delete (playerNodes[id]);
 
         $checkbox.prop('checked', false);
         $toggleAllPlayers.prop('checked', false);
@@ -124,7 +125,7 @@ $(document).ready(function() {
         nocache = false;
     });
 
-    $playerCheckboxes.on('click', function() {
+    $playerCheckboxes.on('click', function () {
         var id = this.id,
             name = this.getAttribute('data-name'),
             checked = this.checked;
@@ -134,7 +135,7 @@ $(document).ready(function() {
 
         if (playerNodes[id]) {
             playerQueue--;
-            $.each(playerNodes[id], function() {
+            $.each(playerNodes[id], function () {
                 this.setAttribute('data-hideid', !checked);
             });
             updateRowVisibility();
@@ -147,20 +148,20 @@ $(document).ready(function() {
             $.ajax('getPlayerData.php' + (nocache ? '?nocache=1' : window.location.search), {
                 data: {id: id, app: window.data.app},
                 dataType: 'json',
-                error: function(response) {
+                error: function () {
                     $('#' + id).prop('checked', false);
                     $toggleAllPlayers.prop('checked', false);
                     $status.removeClass('loading');
                     addError('Could not load stats for ' + name);
-                    delete(playerNodes[id]);
+                    delete (playerNodes[id]);
                 },
-                success: function(response) {
+                success: function (response) {
                     if ($mainTable.hasClass('hidden')) {
                         $mainTable.removeClass('hidden');
                         buildTable(response);
                     }
 
-                    $.each(response, function() {
+                    $.each(response, function () {
                         var $ul = $('#' + this.apiname),
                             li = document.createElement('li'),
                             type = this.achieved === 1 ? 'earned' : 'unearned';
@@ -178,7 +179,7 @@ $(document).ready(function() {
                     $status.removeClass('loading');
                     $status.addClass('loaded');
                 },
-                complete: function() {
+                complete: function () {
                     $checkbox.prop('disabled', false);
                     playerQueue--;
                     updateRowVisibility();
@@ -198,8 +199,8 @@ function updateRowVisibility() {
     if ($('#hideTestAchievements').prop('checked')) {
         selector += ':not(".testAchievement")';
     }
-    $mainTable.find(selector).each(function() {
-        $tr = $(this);
+    $mainTable.find(selector).each(function () {
+        var $tr = $(this);
         $tr.toggleClass('hidden', !$tr.find('.earnedUnearnedList').children('[data-hideid!=true][data-hidetype!=true]').length);
     });
 }

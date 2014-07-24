@@ -7,8 +7,8 @@ ul {
 }
 
 .hidden,
-*[data-hideid='true'],
-*[data-hidetype='true'] {
+li[data-hideid='true'],
+li[data-hidetype='true'] {
     display: none !important;
 }
 
@@ -77,6 +77,7 @@ ul {
 .mainTable {
     border-collapse: collapse;
     clear: both;
+    margin-top: 1em;
     width: 100%;
 }
 .mainTable th {
@@ -149,7 +150,7 @@ ul {
     width: 32px;
     padding-right: 0;
 }
-.avatarOnly .player * {
+.avatarOnly .player span {
     display: none;
 }
 .avatarOnly .earned.player:before {
