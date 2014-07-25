@@ -1,8 +1,3 @@
-body {
-    background-color: #333333;
-    color: #eeeeee;
-    font-family: Arial, Helvetica, sans-serif;
-}
 p {margin-bottom: 0.5em;}
 
 ul {
@@ -11,14 +6,14 @@ ul {
     padding: 0;
 }
 
-abbr[title] {
-    border-bottom: 1px dashed silver;
+.hidden,
+li[data-hideid='true'],
+li[data-hidetype='true'] {
+    display: none !important;
 }
 
 .main {
     margin: auto 50px;
-    min-width: 500px;
-    max-width: 985px;
 }
 
 .flash {
@@ -39,9 +34,8 @@ abbr[title] {
     width: 500px;
     margin: auto;
 }
-
 .filters fieldset {
-    margin-bottom: 5px;
+    margin-bottom: 0.3em;
 }
 
 .clearDiv {
@@ -63,110 +57,104 @@ abbr[title] {
     font-style: italic;
 }
 
-.progress {
-    display: block;
-    margin: auto;
-    width: 500px;
+.status:after {
+    content: '';
+    display: inline-block;
+    width: 16px;
 }
-
-table {
-    display: none;
+.status.loading:after {
+    content: '\2026';
+}
+.status.loaded {
+    cursor: pointer;
+}
+.status.loaded:after {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAAAAJiS0dEAP+Hj8y/AAAACXBIWXMAAAsTAAALEwEAmpwYAAABoUlEQVQozz3Cz4vMYRzA8ffn+T77nZFmC7WbzLLh4ia0B5QSJaflsuugqLlwcSBHir24+ANGyknKRZxXyYaWnDb5USNm09JM86PxnZlnP8/ncdPrRZuO9LNAqIY7cTVuxFb8HB6FY4lAmItNBrRdn+Jq0SlSYUX6rz6YL1pFko6bMLvHTSIOIRLJgYQACaQNNR4wpsQ37rNCYB81zqM4BPGjaXcLKPE8X3TDkezAvrbPOhAEAR8X4gzQ4NJwuDX/HcZVXriD0chIKPhwBoA6HT/xVyexKj+0zX6mKePB624APoBaxXax9m5yfoYvJTfFLHupes0ATB3QowGiWTOWxzRnm7wGF5qBgB5SRq7FL/6klvZZd938UyWxJk5fKYpeLkpHNs0HKWSQdX1u4e7g5/u3gxvyZo+tMgU89DVQIeEwLvAYw7nr2cWeiZ22kc3pqbAh3ZTHA3bblkzN2/LxK7IinbTlCQsoGcIApUKG4lnnBI1sUbZLeKZ5PGqZJStZ2Zwly2w5ndv87p28BDG3Ge0w1+wkO3H03EfqPN1mhTj7B/xe3+2eik7RAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA3LTE3VDE2OjUyOjA5LTA0OjAwklIH/wAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNy0xN1QxNjo1MjowOS0wNDowMOMPv0MAAAAASUVORK5CYII=);
+    height: 16px;
+    width: 16px;
 }
 
 .mainTable {
     border-collapse: collapse;
     clear: both;
+    margin-top: 1em;
+    width: 100%;
 }
-.tablesorter {
-    display: table;
+.mainTable th {
+    font-size: smaller;
+    text-align: left;
+    white-space: nowrap;
 }
-
 .mainTable th,
 .mainTable td {
-    border: solid 1px black !important;
-    padding: 0.5em !important;
+    padding: 0.5em;
+}
+.mainTable th:first-child,
+.mainTable td:first-child {
+    width: 50%;
+}
+.mainTable th:last-child ,
+.mainTable td:last-child {
+    width: 4em;
+}
+.mainTable td:last-child {
+    text-align: right;
 }
 
-/*.mainTable td:first-child {width:  60%;}*/
-.mainTable td:first-child small {color: #bbbbbb;}
+.achievement-name {
+    display: block;
+}
+.achievement-desc {
+    font-size: smaller;
+}
 
 .earnedUnearnedList li {
-    display: inline-block;
+    cursor: pointer;
     padding: 0;
     margin: 4px;
+}
+.earnedUnearnedList .avatar:before {
     border-width: 2px;
     border-style: solid;
-    max-height: 64px;
-    max-width: 64px;
 }
-
-.compact .earnedUnearnedList {
-    max-height: 64px;
+.earnedUnearnedList {
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
 }
 
-.compact li {
-    margin-bottom: 0;
+.hideearned .earned,
+.hideunearned .unearned,
+.hideTest .testAchievement {
+    display: none;
 }
 
-.compact img {
-    display: list-item;
-    width: 32px;
+.player:before {
+    background-size: 16px;
+    content: '';
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    margin-right: 0.3em;
+}
+
+.avatarOnly li {
+    display: inline-block;
+}
+.avatarOnly .player:before {
+    background-size: 32px;
+    border-style: solid;
+    border-width: 2px;
+    display: inline-block;
     height: 32px;
+    width: 32px;
+    padding-right: 0;
 }
-
-.textNames li {
-    display: block;
-    border-style: none;
-    float: none;
-    margin: 0;
-    padding: 0;
-    max-width: 100%;
-}
-
-.textNames img {
+.avatarOnly .player span {
     display: none;
 }
-
-.earnedUnearnedList li p {
-    margin: 0;
-    display: none;
-}
-
-.textNames .earnedUnearnedList li p {
-     display: inline;
-}
-
-
-.earned {
-    color: #00cc00;
-    border-color: #00cc00;
-}
-.earned img {
+.avatarOnly .earned.player:before {
     opacity: 0.5;
-}
-.unearned {
-    color: #000080;
-    border-color: #000080;
-}
-
-.mainTable td:last-child {
-    text-align: right;
-    width: 70px;
-}
-
-[data-hidetest=true],
-[data-hideid=true],
-[data-hidetype=true] {
-    display: none;
-}
-
-li[data-hidetest=true],
-li[data-hideid=true],
-li[data-hidetype=true] {
-    display: none;
 }
 
 .achievements,
@@ -180,49 +168,10 @@ li[data-hidetype=true] {
 .tableFormat {
     float: right;
 }
-.special {
-    width: 162px;
-}
 
 .timeProfile {
-    text-align: right;
     font-style: italic;
-    color: #555555;
-    margin-right: 20px;
+    margin-right: 1em;
+    margin-top: 1em;
+    text-align: right;
 }
-
-@media (max-width: 639px) {
-    .mainTable td:nth-of-type(2) {
-        width: 164px; /*two large avatar photos across*/
-        max-width: 164px;
-    }
-}
-
-@media (min-width: 640px) and (max-width: 1084px) {
-    .mainTable td:nth-of-type(2) {
-        width: 246px; /*three large avatar photos across*/
-        max-width: 246px;
-    }
-}
-
-@media (min-width: 1085px) {
-    .main {
-        margin: auto;
-    }
-    .mainTable td:nth-of-type(2) {
-        width: 328px; /*four large avatar photos across*/
-        max-width: 328px;
-    }
-}
-
-/* tablesorter banded rows */
-.tablesorter-grey td {
-    background-color: inherit !important;
-}
-.tablesorter-grey tbody tr:nth-of-type(odd) {
-    background-color: #5e5e5e;
-}
-.tablesorter-grey tbody tr:nth-of-type(even) {
-    background-color: #6d6d6d;
-}
-

@@ -1,129 +1,72 @@
-//Handle errors
-$(document).ready(function() {
-    $.each(errors, function(index, error) {
-        addError(error);
+var $mainTable,
+    $playerCheckboxes,
+    $toggleAllPlayers,
+    hideType = {},
+    playerNodes = {},
+    playerQueue = 0,
+    typeNodes = {earned: [], unearned: []},
+    nocache = false; // TODO: Figure out $.trigger's extra parameters
+
+$(document).ready(function () {
+    // Initialize
+    $mainTable = $('#mainTable');
+    $playerCheckboxes = $('#playerFilter input[data-name]');
+    $toggleAllPlayers = $('#toggleAllPlayers');
+
+    // Render error messages
+    $.each(window.data.errors, function () {
+        addError(this);
     });
+
+    // Reset checkboxes
+    $('#filters input').prop('checked', false);
+    $('#earnedUnearnedFilter input').prop('checked', true);
 });
 
-$(document).ready(function() {
-    var requestCount = 0,
-        responseCount = 0,
-        $progress = $('#playerDataProgress');
+function buildTable(playerData) {
+    var $tbody = $mainTable.find('tbody'),
+        metadata = {};
 
-    $progress.attr('max', Object.keys(players).length);
-
-    $.each(players, function(id) {
-        window.setTimeout(function() {
-            $.ajax('getPlayerData.php', {
-                data: {id: id, app: app},
-                dataType: 'json',
-                error: function(response) {
-                    addError('Could not load stats for ' + players[id].name);
-                    delete players[id];
-                },
-                success: function(response) {
-                    $.each(response, function(index, data) {
-                        var achievement = achievements[data.apiname],
-                            type = data.achieved === 1 ? 'earned' : 'unearned';
-                        achievement[type].push(id);
-                        if (!achievement.name || !achievement.description) {
-                            achievement.name = data.name;
-                            achievement.description = data.description;
-                        }
-                    });
-                },
-                complete: function() {
-                    if (++responseCount === requestCount) {
-                        buildDOM();
-                        $progress.remove();
-                    } else {
-                        $progress.attr('value', responseCount);
-                    }
-                }
-            });
-        }, requestCount++ * 100);
+    $.each(playerData, function () {
+        metadata[this.apiname] = {name: this.name, description: this.description};
     });
-});
 
-//Build DOM
-function buildDOM() {
-    var $mainTable = $('#mainTable'),
-        $tbody = $mainTable.find('tbody'),
-        $nonTestAchvs;
-
-    $.each(achievements, function() {
-        if (this.name) {
-            var $tr = $('<tr></tr>'),
-                $list = $('<ul class="earnedUnearnedList"></ul>'),
-                percent = this.percent || 0;
-
-            if (percent < 0.1) {
-                $tr.addClass('testAchievement');
-            }
-
-            if (this.earned) {
-                $.each(this.earned, function(index, id) {
-                    $list.append($('<li class="earned"></li>').append(playerHTML(players[id])).attr('data-id', id));
-                });
-            }
-            if (this.unearned) {
-                $.each(this.unearned, function(index, id) {
-                    $list.append($('<li class="unearned"></li>').append(playerHTML(players[id])).attr('data-id', id));
-                });
-            }
-
-            $tr.append(
-                $('<td></td>').append(document.createTextNode(this.name))
-                        .append('<br />')
-                        .append($('<small></small>').append(document.createTextNode(this.description)))
-            );
-
-            $tr.append($('<td></td>').append($list));
-
-            $tr.append($('<td></td>')
-                .append($('<abbr></abbr>').attr('title', percent + '%')
-                    .append(percent.toFixed(2) + '%')
-            ));
-
-            $tbody.append($tr);
+    $.each(window.data.achievements, function (id, percent) {
+        if (!metadata[id]) {
+            return true;
         }
-    });
 
-    $.each(players, function(id) {
-        var name = players[id].name,
-            li = $('<li></li>');
-        li.append('<input type="checkbox" id="' + id + '" checked />');
-        li.append('<label for="' + id + '">' + name + '</label>');
-        $('#playerFilter').append(li);
-    });
+        var $tr = $('<tr></tr>');
 
-    $nonTestAchvs = $mainTable.find('tr:not(.testAchievement)');
-    $.each(players, function(id) {
-        if (!$nonTestAchvs.find('li.unearned[data-id=' + id + ']').length) {
-            $('#playerFilter label[for=' + id + ']').addClass('earned');
+        if (percent < window.data.testThreshold) {
+            $tr.addClass('testAchievement');
         }
+
+        $tr.append(
+            $('<td></td>')
+                .append($('<span class="achievement-name"></span>').append(document.createTextNode(metadata[id].name)))
+                .append($('<span class="achievement-desc"></span>').append(document.createTextNode(metadata[id].description)))
+        );
+
+        $tr.append($('<td></td>').append($('<ul class="earnedUnearnedList"></ul>').attr('id', id)));
+
+        $tr.append($('<td></td>')
+            .append($('<abbr></abbr>').attr('title', percent + '%')
+                .append(percent.toFixed(2) + '%')
+            )
+        );
+
+        $tbody.append($tr);
     });
 
-    $('#playerFilter input:not([id=toggleAllPlayers])').change(function(evt) {
-        var hide = !evt.currentTarget.checked;
-
-        $('#toggleAllPlayers').prop('checked', !$('#playerFilter input:not(:checked):not([id=toggleAllPlayers])').length);
-
-        $('#mainTable .earnedUnearnedList li[data-id=' + evt.currentTarget.id + ']').each(function() {
-            var $this = $(this);
-            $this.attr('data-hideid', hide);
+    $('#earnedUnearnedFilter input').change(function () {
+        var hide = !this.checked,
+            type = this.value;
+        hideType[type] = hide;
+        $.each(typeNodes[type], function () {
+            this.setAttribute('data-hidetype', hide);
         });
-
-        updateAllRowVisibility();
-    });
-
-    $('#earnedUnearnedFilter input').change(function(evt) {
-        var hide = !evt.currentTarget.checked;
-        $('#mainTable .earnedUnearnedList li.' + evt.currentTarget.value).each(function() {
-            var $this = $(this);
-            $this.attr('data-hidetype', hide);
-            updateRowVisibility($this.closest('tr'));
-        });
+        updateRowVisibility();
     });
 
     //Init sort plugins
@@ -135,72 +78,134 @@ function buildDOM() {
     });
     $mainTable.find('li').tsort();
 
-    addExecutionTime();
+    $mainTable.removeClass('hidden');
 }
 
-//Initial manipulation
-$(document).ready(function() {
-    $('#filters fieldset:not([class=special],[class=tableFormat]) input').prop('checked', true);
-    $('#filters fieldset[class=special] input').prop('checked', false);
-    $('#tableFormatFull').prop('checked', true);
-    $('#hideTestAchievements').prop('checked', false);
-});
-
 //Event hooks
-$(document).ready(function() {
-    $('#close').click(function() {
+$(document).ready(function () {
+    $('#close').click(function () {
         $(this).parent().css('display', '');
     });
 
-    $('#toggleAllPlayers').change(function(evt) {
-        var checked = evt.currentTarget.checked;
-        $('#playerFilter input:not([id=toggleAllPlayers])').prop('checked', checked);
-
-        $('#mainTable .earnedUnearnedList li').each(function() {
-            var $this = $(this);
-            $this.attr('data-hideid', !checked);
-        });
-        updateAllRowVisibility();
-    });
-
-    $('#hideTestAchievements').change(function(evt) {
-        $('#mainTable tr.testAchievement').each(function() {
-            $(this).attr('data-hidetest', evt.currentTarget.checked);
+    $toggleAllPlayers.click(function () {
+        var checked = this.checked;
+        $playerCheckboxes.each(function () {
+            if (this.checked !== checked) {
+                $(this).trigger('click');
+            }
         });
     });
 
-    $('.tableFormat input').change(function(evt) {
-        $('#mainTable').toggleClass('full textNames compact', false);
-        $('#mainTable').toggleClass(evt.currentTarget.value, true);
+    $('#hideTestAchievements').change(function () {
+        $mainTable.toggleClass('hideTest', this.checked);
+    });
+
+    $('#toggleNames').change(function () {
+        $mainTable.toggleClass('avatarOnly', !this.checked);
+    });
+
+    $mainTable.on('click', 'li', null, function () {
+        window.open('http://steamcommunity.com/profiles/' + this.getAttribute('data-id'), '_blank');
+    });
+
+    $('#playerFilter').on('click', '.loaded', null, function () {
+        var $this = $(this).removeClass('loaded'),
+            $checkbox = $this.siblings('input'),
+            id = $checkbox.attr('id');
+
+        $.each(playerNodes[id], function () {
+            $(this).remove();
+        });
+        delete (playerNodes[id]);
+
+        $checkbox.prop('checked', false);
+        $toggleAllPlayers.prop('checked', false);
+        nocache = true;
+        $checkbox.trigger('click');
+        nocache = false;
+    });
+
+    $playerCheckboxes.on('click', function () {
+        var id = this.id,
+            name = this.getAttribute('data-name'),
+            checked = this.checked;
+
+        $toggleAllPlayers.prop('checked', checked && !$playerCheckboxes.filter(':not(:checked)').length);
+        playerQueue++;
+
+        if (playerNodes[id]) {
+            playerQueue--;
+            $.each(playerNodes[id], function () {
+                this.setAttribute('data-hideid', !checked);
+            });
+            updateRowVisibility();
+        } else {
+            var $checkbox = $(this).prop('disabled', true),
+                $status = $checkbox.siblings('.status');
+            $status.addClass('loading');
+            playerNodes[id] = [];
+
+            $.ajax('getPlayerData.php' + (nocache ? '?nocache=1' : window.location.search), {
+                data: {id: id, app: window.data.app},
+                dataType: 'json',
+                error: function () {
+                    $('#' + id).prop('checked', false);
+                    $toggleAllPlayers.prop('checked', false);
+                    $status.removeClass('loading');
+                    addError('Could not load stats for ' + name);
+                    delete (playerNodes[id]);
+                },
+                success: function (response) {
+                    if ($mainTable.hasClass('hidden')) {
+                        $mainTable.removeClass('hidden');
+                        buildTable(response);
+                    }
+
+                    $.each(response, function () {
+                        var $ul = $('#' + this.apiname),
+                            li = document.createElement('li'),
+                            type = this.achieved === 1 ? 'earned' : 'unearned';
+
+                        li.className = 'player p' + id + ' ' + type;
+                        li.setAttribute('data-id', id);
+                        li.setAttribute('data-hidetype', hideType[type]);
+                        li.appendChild($('<span class="player-name"></span>').append(document.createTextNode(name)).get(0));
+                        $ul.append(li);
+
+                        playerNodes[id].push(li);
+                        typeNodes[type].push(li);
+                    });
+
+                    $status.removeClass('loading');
+                    $status.addClass('loaded');
+                },
+                complete: function () {
+                    $checkbox.prop('disabled', false);
+                    playerQueue--;
+                    updateRowVisibility();
+                }
+            });
+        }
     });
 });
 
 //Utility functions
-function playerHTML(player) {
-    return $('<img width="64" height="64" />').attr('src', player.avatarMediumURL).attr('alt', player.name).attr('title', player.name)
-                .add($('<p></p>').append(document.createTextNode(player.name)));
-}
-
-function updateAllRowVisibility() {
-    $('#mainTable tbody tr').each(function() {
-        updateRowVisibility($(this));
-    });
-}
-
-function updateRowVisibility($tr) {
-    if ($tr.find('li[data-hideid!=true][data-hidetype!=true]').length) {
-        $tr.css('display', '');
-    } else {
-        $tr.css('display', 'none');
+function updateRowVisibility() {
+    if (playerQueue) {
+        return;
     }
-}
 
-function addExecutionTime() {
-    $('<li></li>').append('JavaScript time: ' + ((new Date().getTime() - javascriptStartTime) / 1000).toFixed(2) + ' seconds').appendTo($('.timeProfile'));
+    var selector = 'tbody tr';
+    if ($('#hideTestAchievements').prop('checked')) {
+        selector += ':not(".testAchievement")';
+    }
+    $mainTable.find(selector).each(function () {
+        var $tr = $(this);
+        $tr.toggleClass('hidden', !$tr.find('.earnedUnearnedList').children('[data-hideid!=true][data-hidetype!=true]').length);
+    });
 }
 
 function addError(error) {
     $('#flash ul').append($('<li></li>').append(document.createTextNode(error)));
     $('#flash').addClass('alert').css('display', 'block');
 }
-

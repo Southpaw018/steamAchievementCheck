@@ -40,8 +40,8 @@ class SteamAPIClient {
         return $this->get("ISteamUserStats/GetUserStatsForGame/v0002/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en", $app, $steamid);
     }
 
-    public function getPlayerProfileSummaries($steamidlist = array()) {
-        return $this->getMulti("ISteamUser/GetPlayerSummaries/v0002/?key=" . API_KEY . "&steamids=", $steamidlist);
+    public function getPlayerProfileSummaries($ids = array()) {
+        return $this->getMulti("ISteamUser/GetPlayerSummaries/v0002/?key=" . API_KEY . "&steamids=", $ids);
     }
 
     public function lastCallSucceeded() {
@@ -67,37 +67,35 @@ class SteamAPIClient {
         return false;
     }
 
-    protected function getMulti($path, $steamidlist) {
+    protected function getMulti($path, $ids) {
         $cachedPlayerData = array();
         $newPlayerIDsToGet = array();
 
-        foreach ($steamidlist as $steamid) {
-            $cachePath = $this->getCachePath('', $steamid);
+        foreach ($ids as $id) {
+            $cachePath = $this->getCachePath('', $id);
             if ($this->useCache($cachePath)) {
                 $this->lastCallSucceeded = true;
                 $cachedPlayerData[] = json_decode(file_get_contents($cachePath), true);
-            }
-            else {
-                $newPlayerIDsToGet[] = $steamid;
+            } else {
+                $newPlayerIDsToGet[] = $id;
             }
         }
 
-        $response = @file_get_contents("{$this->domain}/{$path}" . implode(",", $newPlayerIDsToGet));
-        if ($response !== false) {
-            $this->lastCallSucceeded = true;
-            $result = json_decode($response, true);
-            $result = $result['response']['players'];
-
-            foreach ($result as $cacheItem) {
-                $cachePath = $this->getCachePath('', $cacheItem['steamid']);
-                file_put_contents($cachePath, preg_replace('/([^\n])?$/', "$1\n", json_encode($cacheItem)));
-            }
-            $playerData = array_merge($cachedPlayerData, $result);
-            return $playerData;
+        $response = @file_get_contents("{$this->domain}/{$path}" . implode(',', $newPlayerIDsToGet));
+        if ($response === false) {
+            $this->lastCallSucceeded = false;
+            return false;
         }
 
-        $this->lastCallSucceeded = false;
-        return false;
+        $this->lastCallSucceeded = true;
+        $result = json_decode($response, true);
+        $result = $result['response']['players'];
+
+        foreach ($result as $cacheItem) {
+            $cachePath = $this->getCachePath('', $cacheItem['steamid']);
+            file_put_contents($cachePath, json_encode($cacheItem) . "\n");
+        }
+        return array_merge($cachedPlayerData, $result);
     }
 
     protected function useCache($path) {

@@ -4,39 +4,39 @@ $phpStartTime = microtime(true);
 require('apiKey.php');
 require('SteamAPIClient.php');
 
+//Config
+define("TEST_THRESHOLD", 0.1);
+
 //Games we play a lot
 define("KILLING_FLOOR", 1250);
 define("PAYDAY", 24240);
 define("PAYDAY2", 218620);
 
 $errors = array();
-
-//Steam ID lookup service: http://steamid.co/
-$player_ids = array(
-    '76561197993313145', //Glorax
-    '76561197970314683', //Deagle
-    '76561198015208150', //Fargi
-    '76561197966611402', //Moof
-    '76561198006448879', //Scibs
-    '76561197993231027', //Banana
-    '76561198014895533', //Bukkithead
-    '76561197972658071', //Chuffy
-    '76561197996816207', //Master
-    '76561197998922044', //Joe
-    '76561197986608136', //Dagordae
-    '76561197995406735', //Kation
-    '76561197992657083', //Lucas/Xraii
-    '76561197996775776', //Balthazar
-);
-
 $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
-list($achievements, $players) = getPageData($app, $player_ids, $errors);
+$api = new SteamAPIClient(API_KEY, $_GET);
+$player_ids = getPlayerIDs();
+$achievements = getAchievementData($api, $app, $errors);
+$players = getPlayerData($api, $player_ids, $errors);
 
 /**
- * Instantiate API, get achievement list, sort, and set up array with name and and global %
+ * Return a list of player Steam IDs.
  */
-function getPageData($app, $player_ids, &$errors) {
-    $api = new SteamAPIClient(API_KEY, $_GET);
+function getPlayerIDs() {
+    $lines = file('playerIDs.txt');
+    $ids = array();
+    foreach ($lines as $line) {
+        if (preg_match('/^\s*(?![#;=]).*(?<!\d)(\d{17})(?!\d)/', $line, $matches)) {
+            $ids[] = $matches[0];
+        }
+    }
+    return $ids;
+}
+
+/**
+ * Return a list of $apiname => $percent, sorted by $apiname.
+ */
+function getAchievementData($api, $app, &$errors) {
     $response = $api->getGameAchievements($app);
     if (!$api->lastCallSucceeded()) {
         $errors[] = "Failure getting global achievement stats. Aborting.";
@@ -50,15 +50,19 @@ function getPageData($app, $player_ids, &$errors) {
 
     $achievements = array();
     foreach ($rawAchievements as $achievement) {
-        $achievements[$achievement['name']] = array(
-            'percent' => $achievement['percent'],
-            'earned' => array(),
-            'unearned' => array(),
-        );
+        if ($achievement['name']) {
+            $achievements[$achievement['name']] = $achievement['percent'];
+        }
     }
 
-    //Get player names and info, then sort them by name
-    $response = $api->getPlayerProfileSummaries($player_ids);
+    return $achievements;
+}
+
+/**
+ * Return a list of $id => $data, sorted by name.
+ */
+function getPlayerData($api, $ids, &$errors) {
+    $response = $api->getPlayerProfileSummaries($ids);
     if (!$api->lastCallSucceeded()) {
         $errors[] = "Failure getting player profiles. Aborting.";
         return;
@@ -66,28 +70,24 @@ function getPageData($app, $player_ids, &$errors) {
 
     $players = array();
     foreach ($response as $player) {
-        $playerSteamID = $player['steamid'];
-
-        $players[$playerSteamID] = array(
-            'name' => $player['personaname'],
-            'avatarSmallURL' => $player['avatar'],
-            'avatarMediumURL' => $player['avatarmedium'],
-            //'online' => $player['personastate'] == 1 ? 'true' : 'false'
-        );
+        $data = array();
+        foreach (array('personaname', 'avatar') as $key) {
+            $data[$key] = $player[$key];
+        }
+        $players[$player['steamid']] = $data;
     }
 
     uasort($players, function($a, $b) {
-        $a['name'] = strtolower($a['name']);
-        $b['name'] = strtolower($b['name']);
-        if ($a['name'] === $b['name']) return 0;
-        return $a['name'] < $b['name'] ? -1 : 1;
+        $a['personaname'] = strtolower($a['personaname']);
+        $b['personaname'] = strtolower($b['personaname']);
+        if ($a['personaname'] === $b['personaname']) return 0;
+        return $a['personaname'] < $b['personaname'] ? -1 : 1;
     });
 
-    return array($achievements, $players);
+    return $players;
 }
 
-$phpEndTime = microtime(true);
-$phpExecutionTime = $phpEndTime - $phpStartTime;
+$phpExecutionTime = microtime(true) - $phpStartTime;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -96,20 +96,26 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
         <meta charset="utf-8" />
 
         <link rel="stylesheet" type="text/css" href="css/flash.css" />
-        <link rel="stylesheet" type="text/css" href="css/theme.grey.css" />
+        <link rel="stylesheet" type="text/css" href="css/tablesorter.css" />
         <link rel="stylesheet" type="text/css" href="css/main.css" />
+        <link rel="stylesheet" type="text/css" href="css/theme.css" />
+        <style type="text/css">
+        <?php foreach ($players as $id => $player): ?>
+            .p<?= $id; ?>:before {background-image: url('<?= $player['avatar']; ?>');}
+        <?php endforeach; ?>
+        </style>
 
-        <script>var javascriptStartTime = new Date().getTime();</script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="js/jquery.tablesorter.min.js"></script>
         <script src="js/jquery.tinysort.js"></script>
         <script src="js/main.js"></script>
         <script>
-            var achievements = <?=json_encode($achievements);?>;
-            var players = <?=json_encode($players);?>;
-            var errors = <?=json_encode($errors);?>;
-            var phpExecutionTime = <?=$phpExecutionTime;?>;
-            var app = <?=$app;?>;
+            window.data = {
+                achievements: <?= json_encode($achievements); ?>,
+                errors: <?= json_encode($errors); ?>,
+                app: <?= json_encode($app); ?>,
+                testThreshold: <?= json_encode(TEST_THRESHOLD); ?>
+            };
         </script>
     </head>
     <body>
@@ -124,9 +130,16 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                         <legend>Show players</legend>
                         <ul id="playerFilter" class="playerFilter">
                             <li>
-                                <input type="checkbox" id="toggleAllPlayers" checked />
+                                <input type="checkbox" id="toggleAllPlayers" />
                                 <label for="toggleAllPlayers">All</label>
                             </li>
+                            <?php foreach ($players as $id => $player): ?>
+                                <li>
+                                    <span class="status"></span>
+                                    <input type="checkbox" id="<?= $id; ?>" data-name="<?= $player['personaname']; ?>" />
+                                    <label for="<?= $id; ?>"><span class="player p<?= $id; ?>"><?= htmlspecialchars($player['personaname']); ?></span></label>
+                                </li>
+                            <?php endforeach; ?>
                         </ul>
                     </fieldset>
                     <fieldset class="achievements">
@@ -146,32 +159,18 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
                         <legend>Display options</legend>
                         <ul>
                             <li>
-                                <input type="radio" name="tableFormat" value="full" id="tableFormatFull" />
-                                <label for="tableFormatFull">Use full format</label>
+                                <input type="checkbox" id="toggleNames">
+                                <label for="toggleNames">Show player names</label>
                             </li>
-                            <li>
-                                <input type="radio" name="tableFormat" value="textNames" id="tableFormatTextNames" />
-                                <label for="tableFormatTextNames">Use player names</label>
-                            </li>
-                            <li>
-                                <input type="radio" name="tableFormat" id="tableFormatCompact" value="compact">
-                                <label for="tableFormatCompact">Use compact format</label>
-                            </li>
-                        </ul>
-                    </fieldset>
-                    <fieldset class="special">
-                        <legend>Special</legend>
-                        <ul>
                             <li>
                                 <input type="checkbox" value="hideTest" id="hideTestAchievements" />
-                                <label for="hideTestAchievements">Hide &lt;0.1% earned</label>
+                                <label for="hideTestAchievements">Hide &lt;<?= TEST_THRESHOLD; ?>% earned</label>
                             </li>
                         </ul>
                     </fieldset>
                 </form>
             </div>
-            <progress id="playerDataProgress" class="progress"></progress>
-            <table id="mainTable" class="mainTable">
+            <table id="mainTable" class="mainTable hidden avatarOnly">
                 <thead>
                     <tr>
                         <th>Achievement</th>
@@ -183,9 +182,6 @@ $phpExecutionTime = $phpEndTime - $phpStartTime;
             </table>
         </section>
 
-        <ul class="timeProfile">
-            <li>PHP time: <?=round($phpExecutionTime, 2);?> seconds</li>
-        </ul>
+        <div class="timeProfile">PHP time: <?= round($phpExecutionTime, 2); ?> seconds</div>
     </body>
 </html>
-
