@@ -161,11 +161,15 @@ $(document).ready(function () {
                         buildTable(response);
                     }
 
+                    var perfectGame = true;
                     $.each(response, function () {
                         var $ul = $('#' + this.apiname),
                             li = document.createElement('li'),
                             type = this.achieved === 1 ? 'earned' : 'unearned';
 
+                        if (perfectGame && type == 'unearned') {
+                            perfectGame = false;
+                        }
                         li.className = 'player p' + id + ' ' + type;
                         li.setAttribute('data-id', id);
                         li.setAttribute('data-hidetype', hideType[type]);
@@ -176,6 +180,9 @@ $(document).ready(function () {
                         typeNodes[type].push(li);
                     });
 
+                    if (perfectGame) {
+                        $checkbox.siblings('label').find('span').addClass('perfect');
+                    }
                     $status.removeClass('loading');
                     $status.addClass('loaded');
                 },
