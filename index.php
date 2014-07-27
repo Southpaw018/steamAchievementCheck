@@ -105,9 +105,9 @@ $phpExecutionTime = microtime(true) - $phpStartTime;
         <?php endforeach; ?>
         </style>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="js/jquery.tablesorter.min.js"></script>
-        <script src="js/jquery.tinysort.js"></script>
+        <script src="js/jquery.tinysort.min.js"></script>
         <script src="js/main.js"></script>
         <script>
             window.data = {
