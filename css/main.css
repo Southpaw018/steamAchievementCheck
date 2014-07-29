@@ -140,6 +140,7 @@ li[data-hidetype='true'] {
 
 .avatarOnly li {
     display: inline-block;
+    vertical-align: top;
 }
 .avatarOnly .player:before {
     background-size: 32px;
@@ -150,10 +151,17 @@ li[data-hidetype='true'] {
     width: 32px;
     padding-right: 0;
 }
+.avatarOnly .player:hover:before {
+    background-size: 184px;
+    border-style: none;
+    height: 184px;
+    opacity: 1;
+    width: 184px;
+}
 .avatarOnly .player span {
     display: none;
 }
-.avatarOnly .earned.player:before {
+.avatarOnly .earned:before {
     opacity: 0.5;
 }
 
