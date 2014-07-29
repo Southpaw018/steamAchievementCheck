@@ -4,6 +4,7 @@ var $mainTable,
     hideType = {},
     playerNodes = {},
     playerQueue = 0,
+    testAchievements = {},
     typeNodes = {earned: [], unearned: []},
     nocache = false; // TODO: Figure out $.trigger's extra parameters
 
@@ -40,6 +41,7 @@ function buildTable(playerData) {
 
         if (percent < window.data.testThreshold) {
             $tr.addClass('testAchievement');
+            testAchievements[id] = true;
         }
 
         $tr.append(
@@ -167,7 +169,7 @@ $(document).ready(function () {
                             li = document.createElement('li'),
                             type = this.achieved === 1 ? 'earned' : 'unearned';
 
-                        perfectGame = perfectGame && type === 'earned';
+                        perfectGame = perfectGame && (type === 'earned' || !!testAchievements[this.apiname]);
                         li.className = 'player p' + id + ' ' + type;
                         li.setAttribute('data-id', id);
                         li.setAttribute('data-hidetype', hideType[type]);
