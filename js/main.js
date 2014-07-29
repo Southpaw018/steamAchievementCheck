@@ -167,9 +167,7 @@ $(document).ready(function () {
                             li = document.createElement('li'),
                             type = this.achieved === 1 ? 'earned' : 'unearned';
 
-                        if (perfectGame && type == 'unearned') {
-                            perfectGame = false;
-                        }
+                        perfectGame = perfectGame && type === 'earned';
                         li.className = 'player p' + id + ' ' + type;
                         li.setAttribute('data-id', id);
                         li.setAttribute('data-hidetype', hideType[type]);
@@ -180,9 +178,7 @@ $(document).ready(function () {
                         typeNodes[type].push(li);
                     });
 
-                    if (perfectGame) {
-                        $checkbox.siblings('label').find('span').addClass('perfect');
-                    }
+                    $checkbox.closest('li').toggleClass('perfect', perfectGame);
                     $status.removeClass('loading');
                     $status.addClass('loaded');
                 },

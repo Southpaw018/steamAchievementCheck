@@ -48,9 +48,6 @@ li[data-hidetype='true'] {
     -webkit-column-count: 2;
     column-count: 2;
 }
-.playerFilter .player.perfect {
-    color: deepskyblue;
-}
 .playerFilter li {
     max-width: 220px;
     overflow: hidden;

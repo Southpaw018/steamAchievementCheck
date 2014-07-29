@@ -44,6 +44,9 @@ abbr[title] {
     border-color: red;
 }
 
+.perfect {
+    color: deepskyblue;
+}
 .timeProfile {
     color: #898989;
 }
