@@ -123,8 +123,6 @@ li[data-hidetype='true'] {
     white-space: nowrap;
 }
 
-.hideearned .earned,
-.hideunearned .unearned,
 .hideTest .testAchievement {
     display: none;
 }
