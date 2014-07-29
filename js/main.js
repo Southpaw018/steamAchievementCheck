@@ -18,10 +18,6 @@ $(document).ready(function () {
     $.each(window.data.errors, function () {
         addError(this);
     });
-
-    // Reset checkboxes
-    $('#filters input').prop('checked', false);
-    $('#earnedUnearnedFilter input').prop('checked', true);
 });
 
 function buildTable(playerData) {
@@ -192,6 +188,10 @@ $(document).ready(function () {
             });
         }
     });
+
+    // Reset checkboxes
+    $('#filters input').prop('checked', false);
+    $('#earnedUnearnedFilter input').trigger('click');
 });
 
 //Utility functions
