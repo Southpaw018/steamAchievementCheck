@@ -59,16 +59,6 @@ function buildTable(playerData) {
         $tbody.append($tr);
     });
 
-    $('#earnedUnearnedFilter input').change(function () {
-        var hide = !this.checked,
-            type = this.value;
-        hideType[type] = hide;
-        $.each(typeNodes[type], function () {
-            this.setAttribute('data-hidetype', hide);
-        });
-        updateRowVisibility();
-    });
-
     //Init sort plugins
     $mainTable.tablesorter({
         theme: 'grey',
@@ -108,6 +98,16 @@ $(document).ready(function () {
         window.open('http://steamcommunity.com/profiles/' + this.getAttribute('data-id'), '_blank');
     });
 
+    $('#earnedUnearnedFilter input').change(function () {
+        var hide = !this.checked,
+            type = this.value;
+        hideType[type] = hide;
+        $.each(typeNodes[type], function () {
+            this.setAttribute('data-hidetype', hide);
+        });
+        updateRowVisibility();
+    });
+
     $('#playerFilter').on('click', '.loaded', null, function () {
         var $this = $(this).removeClass('loaded'),
             $checkbox = $this.siblings('input'),
@@ -116,7 +116,7 @@ $(document).ready(function () {
         $.each(playerNodes[id], function () {
             $(this).remove();
         });
-        delete (playerNodes[id]);
+        delete playerNodes[id];
 
         $checkbox.prop('checked', false);
         $toggleAllPlayers.prop('checked', false);
@@ -153,7 +153,7 @@ $(document).ready(function () {
                     $toggleAllPlayers.prop('checked', false);
                     $status.removeClass('loading');
                     addError('Could not load stats for ' + name);
-                    delete (playerNodes[id]);
+                    delete playerNodes[id];
                 },
                 success: function (response) {
                     if ($mainTable.hasClass('hidden')) {
