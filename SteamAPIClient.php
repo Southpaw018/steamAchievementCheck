@@ -33,15 +33,15 @@ class SteamAPIClient {
     }
 
     public function getPlayerAchievements($app, $steamid) {
-        return $this->get("ISteamUserStats/GetPlayerAchievements/v0001/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en", $app, $steamid);
+        return $this->get("ISteamUserStats/GetPlayerAchievements/v0001/?appid={$app}&key={$this->key}&steamid={$steamid}&l=en", $app, $steamid);
     }
 
     public function getPlayerStats($app, $steamid) {
-        return $this->get("ISteamUserStats/GetUserStatsForGame/v0002/?appid={$app}&key=" . API_KEY . "&steamid={$steamid}&l=en", $app, $steamid);
+        return $this->get("ISteamUserStats/GetUserStatsForGame/v0002/?appid={$app}&key={$this->key}&steamid={$steamid}&l=en", $app, $steamid);
     }
 
     public function getPlayerProfileSummaries($ids = array()) {
-        return $this->getMulti("ISteamUser/GetPlayerSummaries/v0002/?key=" . API_KEY . "&steamids=", $ids);
+        return $this->getMulti("ISteamUser/GetPlayerSummaries/v0002/?key={$this->key}&steamids=", $ids);
     }
 
     public function lastCallSucceeded() {
