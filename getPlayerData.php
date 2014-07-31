@@ -1,10 +1,9 @@
 <?php
-
-require('apiKey.php');
+require('helpers.php');
 require('SteamAPIClient.php');
 require('SteamAPIFailException.php');
 
-$api = new SteamAPIClient(API_KEY, $_GET);
+$api = new SteamAPIClient(file_get_contents('api.key'), array('cacheTtl' => getTTLFromRequest($_GET)));
 try {
     $response = $api->getPlayerAchievements($_GET['app'], $_GET['id']);
 } catch (SteamAPIFailException $e) {

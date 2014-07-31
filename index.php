@@ -1,7 +1,7 @@
 <?php
 $phpStartTime = microtime(true);
 
-require('apiKey.php');
+require('helpers.php');
 require('SteamAPIClient.php');
 require('SteamAPIFailException.php');
 
@@ -15,7 +15,8 @@ define("PAYDAY2", 218620);
 
 $errors = array();
 $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
-$api = new SteamAPIClient(API_KEY, $_GET);
+$api = new SteamAPIClient(file_get_contents('api.key'), array('cacheTtl' => getTTLFromRequest($_GET)));
+
 $player_ids = getPlayerIDs();
 $achievements = getAchievementData($api, $app, $errors);
 $players = getPlayerData($api, $player_ids, $errors);
@@ -39,7 +40,7 @@ function getPlayerIDs() {
  */
 function getAchievementData($api, $app, &$errors) {
     try {
-        $response = $api->getGameAchievements($app);
+        $response = $api->getGameAchievements($app, !isset($_GET['nocache']));
     } catch (SteamAPIFailException $e) {
         $errors[] = "Failure getting global achievement stats. Aborting.";
         return;
@@ -65,7 +66,7 @@ function getAchievementData($api, $app, &$errors) {
  */
 function getPlayerData($api, $ids, &$errors) {
     try {
-        $response = $api->getPlayerProfileSummaries($ids);
+        $response = $api->getPlayerProfileSummaries($ids, !isset($_GET['nocache']));
     } catch (SteamAPIFailException $e) {
         $errors[] = "Failure getting player profiles. Aborting.";
         return;
