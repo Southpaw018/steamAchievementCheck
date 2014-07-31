@@ -3,6 +3,7 @@ $phpStartTime = microtime(true);
 
 require('apiKey.php');
 require('SteamAPIClient.php');
+require('SteamAPIFailException.php');
 
 //Config
 define("TEST_THRESHOLD", 0.1);
@@ -37,8 +38,9 @@ function getPlayerIDs() {
  * Return a list of $apiname => $percent, sorted by $apiname.
  */
 function getAchievementData($api, $app, &$errors) {
-    $response = $api->getGameAchievements($app);
-    if (!$api->lastCallSucceeded()) {
+    try {
+        $response = $api->getGameAchievements($app);
+    } catch (SteamAPIFailException $e) {
         $errors[] = "Failure getting global achievement stats. Aborting.";
         return;
     }
@@ -62,8 +64,9 @@ function getAchievementData($api, $app, &$errors) {
  * Return a list of $id => $data, sorted by name.
  */
 function getPlayerData($api, $ids, &$errors) {
-    $response = $api->getPlayerProfileSummaries($ids);
-    if (!$api->lastCallSucceeded()) {
+    try {
+        $response = $api->getPlayerProfileSummaries($ids);
+    } catch (SteamAPIFailException $e) {
         $errors[] = "Failure getting player profiles. Aborting.";
         return;
     }

@@ -10,8 +10,7 @@ class SteamAPIClient {
         $request,
         $domain,
         $cacheDir,
-        $cacheTtl,
-        $lastCallSucceeded;
+        $cacheTtl;
 
     public function __construct(
         $key,
@@ -22,10 +21,9 @@ class SteamAPIClient {
     ) {
         $this->key = $key;
         $this->request = $request;
-        $this->domain = preg_replace('/\/+$/', '', $domain);
+        $this->domain = rtrim($domain, '/');
         $this->cacheDir = $cacheDir;
         $this->cacheTtl = $cacheTtl;
-        $this->lastCallSucceeded = false;
     }
 
     public function getGameAchievements($app) {
@@ -44,27 +42,21 @@ class SteamAPIClient {
         return $this->getMulti("ISteamUser/GetPlayerSummaries/v0002/?key={$this->key}&steamids=", $ids);
     }
 
-    public function lastCallSucceeded() {
-        return $this->lastCallSucceeded;
-    }
-
     protected function get($path, $app = '', $steamid = '') {
         $cachePath = $this->getCachePath($app, $steamid);
         if ($this->useCache($cachePath)) {
-            $this->lastCallSucceeded = true;
             return json_decode(file_get_contents($cachePath), true);
         }
 
-        $response = @file_get_contents("{$this->domain}/{$path}");
-        if ($response !== false) {
-            $this->lastCallSucceeded = true;
-            $result = json_decode($response, true);
-            file_put_contents($cachePath, preg_replace('/([^\n])?$/', "$1\n", json_encode($result)));
-            return $result;
+        $url = "{$this->domain}/{$path}";
+        $response = @file_get_contents($url);
+        if (!$response) {
+            throw new SteamAPIFailException($url);
         }
 
-        $this->lastCallSucceeded = false;
-        return false;
+        $data = json_decode($response, true);
+        file_put_contents($cachePath, json_encode($data) . "\n");
+        return $data;
     }
 
     protected function getMulti($path, $ids) {
@@ -74,20 +66,18 @@ class SteamAPIClient {
         foreach ($ids as $id) {
             $cachePath = $this->getCachePath('', $id);
             if ($this->useCache($cachePath)) {
-                $this->lastCallSucceeded = true;
                 $cachedPlayerData[] = json_decode(file_get_contents($cachePath), true);
             } else {
                 $newPlayerIDsToGet[] = $id;
             }
         }
 
-        $response = @file_get_contents("{$this->domain}/{$path}" . implode(',', $newPlayerIDsToGet));
+        $url = "{$this->domain}/{$path}" . implode(',', $newPlayerIDsToGet);
+        $response = @file_get_contents($url);
         if ($response === false) {
-            $this->lastCallSucceeded = false;
-            return false;
+            throw new SteamAPIFailException($url);
         }
 
-        $this->lastCallSucceeded = true;
         $result = json_decode($response, true);
         $result = $result['response']['players'];
 
