@@ -74,7 +74,7 @@ function getPlayerData($api, $ids, &$errors) {
     $players = array();
     foreach ($response as $player) {
         $data = array();
-        foreach (array('personaname', 'avatar') as $key) {
+        foreach (array('personaname', 'avatar', 'avatarfull') as $key) {
             $data[$key] = $player[$key];
         }
         $players[$player['steamid']] = $data;
@@ -105,6 +105,7 @@ $phpExecutionTime = microtime(true) - $phpStartTime;
         <style type="text/css">
         <?php foreach ($players as $id => $player): ?>
             .p<?= $id; ?>:before {background-image: url('<?= $player['avatar']; ?>');}
+            .avatarOnly .p<?= $id; ?>:hover:before {background-image: url('<?= $player['avatarfull']; ?>');}
         <?php endforeach; ?>
         </style>
 
