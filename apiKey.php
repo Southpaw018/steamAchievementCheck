@@ -1,1 +1,0 @@
-<?php define("API_KEY", "YOUR_API_KEY_HERE"); //Get one at http://steamcommunity.com/dev/apikey?>
