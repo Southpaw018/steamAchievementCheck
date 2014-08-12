@@ -72,7 +72,7 @@ function buildTable(playerData) {
 //Event hooks
 $(document).ready(function () {
     $('#close').click(function () {
-        $(this).parent().css('display', '');
+        $(this).parent().css('display', '').find('li').remove();
     });
 
     $toggleAllPlayers.click(function () {
