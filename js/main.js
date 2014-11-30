@@ -169,6 +169,7 @@ $(document).ready(function () {
                         li.className = 'player p' + id + ' ' + type;
                         li.setAttribute('data-id', id);
                         li.setAttribute('data-hidetype', hideType[type]);
+                        li.setAttribute('title', name);
                         li.appendChild($('<span class="player-name"></span>').append(document.createTextNode(name)).get(0));
                         $ul.append(li);
 
