@@ -9,9 +9,10 @@ require('SteamAPIFailException.php');
 define("TEST_THRESHOLD", 0.1);
 
 //Games we play a lot
-define("KILLING_FLOOR", 1250);
-define("PAYDAY", 24240);
-define("PAYDAY2", 218620);
+define("KILLING_FLOOR",     1250);
+define("KILLING_FLOOR_2", 232090);
+define("PAYDAY",           24240);
+define("PAYDAY2",         218620);
 
 $errors = array();
 $app = isset($_GET['app']) ? $_GET['app'] : PAYDAY2;
